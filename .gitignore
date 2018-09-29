@@ -1,1 +1,4 @@
 venv/
+.idea/
+hkproperty/__pycache__
+add_hkp.iml
