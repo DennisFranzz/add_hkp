@@ -6,7 +6,7 @@ CREATE TABLE hkpUser(
 	username VARCHAR (50) UNIQUE NOT NULL,
 	password VARCHAR (50) NOT NULL,
 	email VARCHAR (355) UNIQUE NOT NULL,
-	created_on TIMESTAMP NOT NULL,
+	created_on TIMESTAMP NOT NULL default current_timestamp,
 	is_superuser BOOLEAN DEFAULT FALSE,
 	last_login TIMESTAMP
 );
@@ -14,9 +14,7 @@ CREATE TABLE hkpUser(
 CREATE TABLE agent(
   id SERIAL PRIMARY KEY UNIQUE,
 	branch_id INTEGER NOT NULL,
-	managing_branch_id INTEGER NOT NULL,
-	CONSTRAINT agent_branch_id_fk FOREIGN KEY (branch_id)
-		REFERENCES agent (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+	managing_branch_id INTEGER
 )INHERITS (hkpUser);
 
 CREATE TABLE branch(
@@ -30,31 +28,10 @@ CREATE TABLE branch(
 ALTER TABLE agent ADD CONSTRAINT agent_managing_branch_id_fk FOREIGN KEY (managing_branch_id)
 		REFERENCES branch (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+ALTER TABLE agent ADD CONSTRAINT agent_branch_id_fk FOREIGN KEY (branch_id)
+		REFERENCES branch (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 
 
-CREATE TABLE propertyAddress(
-	id SERIAL PRIMARY KEY,
-	district VARCHAR(50) NOT NULL,
-	estate VARCHAR(50),
-	block VARCHAR(50) NOT NULL,
-	floor INTEGER NOT NULL,
-	flat VARCHAR(3) NOT NULL
-);
-
-CREATE TABLE property(
-	id SERIAL PRIMARY KEY,
-	owner_id INTEGER NOT NULL,
-	address_id INTEGER NOT NULL,
-	gross_floor_area INTEGER NOT NULL,
-	number_of_bedrooms INTEGER NOT NULL,
-	provide_car_park BOOLEAN NOT NULL,
-	selling_price NUMERIC(20,2) NOT NULL,
-	rental_price NUMERIC(20,2) NOT NULL,
-	for_transaction_type transactionType NOT NULL,
-	CONSTRAINT property_address_id_fk FOREIGN KEY (address_id)
-		REFERENCES propertyAddress(id)
-		ON UPDATE NO ACTION ON DELETE NO ACTION
-);
 
 CREATE TABLE preference(
 	id SERIAL PRIMARY KEY,
@@ -77,7 +54,32 @@ CREATE TABLE customer(
 		REFERENCES preference(id) 
 		ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+CREATE TABLE propertyAddress(
+	id SERIAL PRIMARY KEY,
+	district VARCHAR(50) NOT NULL,
+	estate VARCHAR(50),
+	block VARCHAR(50) NOT NULL,
+	floor INTEGER NOT NULL,
+	flat VARCHAR(3) NOT NULL
+);
 
+CREATE TABLE property(
+	id SERIAL PRIMARY KEY,
+	owner_id INTEGER NOT NULL,
+	address_id INTEGER NOT NULL,
+	gross_floor_area INTEGER NOT NULL,
+	number_of_bedrooms INTEGER NOT NULL,
+	provide_car_park BOOLEAN NOT NULL,
+	selling_price NUMERIC(20,2),
+	rental_price NUMERIC(20,2),
+	for_transaction_type transactionType NOT NULL,
+	CONSTRAINT property_address_id_fk FOREIGN KEY (address_id)
+		REFERENCES propertyAddress(id)
+		ON UPDATE NO ACTION ON DELETE NO ACTION,
+		CONSTRAINT property_owner_id_fk FOREIGN KEY (owner_id)
+		REFERENCES customer(id)
+		ON UPDATE NO ACTION ON DELETE NO ACTION
+);
 
 CREATE TABLE transaction(
 	ref SERIAL PRIMARY KEY,
