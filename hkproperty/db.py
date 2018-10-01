@@ -1,19 +1,34 @@
-from flask import current_app
+import click
+from flask import current_app, g
+from flask.cli import with_appcontext
 from sqlalchemy import create_engine
 
 
-def create_db(app):
-    with app.app_context():
-        engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-        if database_is_empty(engine):
-            with current_app.open_resource('schema.sql') as f:
-                engine.execute(f.read().decode('utf8'))
+@click.command('init-db')
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    click.echo('Initialized the database.')
+
+def get_db():
+    if 'db' not in g:
+        g.db = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
+        #g.db.row_factory = sqlite3.Row
+
+    return g.db
 
 
+def init_db():
+    engine = get_db()
+    with current_app.open_resource('schema.sql') as f:
+        engine.execute(f.read().decode('utf8'))
 
+def close_db(e=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.dispose()
 
-def database_is_empty(engine):
-    table_names = engine.table_names()
-    is_empty = table_names == []
-    print('Db is empty: {}'.format(is_empty))
-    return is_empty
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)

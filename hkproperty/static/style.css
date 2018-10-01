@@ -1,0 +1,33 @@
+.auth_function li {
+    display: inline;
+}
+ul.auth_function{
+    display: inline-block;
+}
+ul.auth_function.right {
+    float: right;
+    padding: 10px;
+}
+h1.app_title{
+    display:inline-block;
+}
+
+
+section.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 15%;
+    background-color: #f1f1f1;
+    float:left;
+    height: 100%;
+    overflow: auto;
+}
+
+section.content{
+    margin-left: 15%;
+
+    padding:1px 16px;
+    height:1000px;
+    background-color: #30799B;
+}
