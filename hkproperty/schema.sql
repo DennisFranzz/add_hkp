@@ -2,65 +2,82 @@
 CREATE TYPE transactionType AS ENUM ('sale','rent','both');
 CREATE TYPE title AS ENUM ('Mr.','Ms.','Mrs.');
 
-CREATE TABLE hkpUser(
-	username VARCHAR (50) UNIQUE NOT NULL,
-	password VARCHAR (50) NOT NULL,
-	email VARCHAR (355) UNIQUE NOT NULL,
-	created_on TIMESTAMP NOT NULL default current_timestamp,
-	is_superuser BOOLEAN DEFAULT FALSE,
-	last_login TIMESTAMP
-);
 
 CREATE TABLE agent(
-  id SERIAL PRIMARY KEY UNIQUE,
+	id SERIAL PRIMARY KEY UNIQUE,
 	branch_id INTEGER NOT NULL,
-	managing_branch_id INTEGER
-)INHERITS (hkpUser);
+	username VARCHAR (50) UNIQUE NOT NULL,
+	password VARCHAR (50) NOT NULL,
+	email VARCHAR (100) UNIQUE NOT NULL,
+	phone VARCHAR (100) NOT NULL,
+	created_on TIMESTAMP NOT NULL default current_timestamp,
+	usergroup VARCHAR (50) NOT NULL,
+	last_login TIMESTAMP
+);
 
 CREATE TABLE branch(
 	id SERIAL PRIMARY KEY,
 	manager_id INTEGER NOT NULL,
+	address VARCHAR (300) NOT NULL,
 	CONSTRAINT branch_manager_id_fk FOREIGN KEY (manager_id)
 		REFERENCES agent (id)
 		ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
-ALTER TABLE agent ADD CONSTRAINT agent_managing_branch_id_fk FOREIGN KEY (managing_branch_id)
+ALTER TABLE agent ADD CONSTRAINT agent_branch_id_fk FOREIGN KEY (branch_id)
 		REFERENCES branch (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-ALTER TABLE agent ADD CONSTRAINT agent_branch_id_fk FOREIGN KEY (branch_id)
-		REFERENCES branch (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+CREATE TABLE district(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR (100)
+);
 
-
+CREATE TABLE estate(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR (100)
+);
 
 CREATE TABLE preference(
 	id SERIAL PRIMARY KEY,
-	district VARCHAR(50),
-	estate VARCHAR(50),
-	buying_budget INTEGER,
-	rental_budget INTEGER,
-	transactionType transactionType
+	district_id INTEGER,
+	estate_id INTEGER,
+	buying_budget INTEGER NOT NULL,
+	rental_budget INTEGER NOT NULL,
+	transactionType transactionType,
+	CONSTRAINT preference_district_id_fk FOREIGN KEY (district_id)
+		REFERENCES district(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+	CONSTRAINT preference_estate_id_fk FOREIGN KEY (estate_id)
+		REFERENCES estate(id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE customer(
 	id SERIAL PRIMARY KEY,
-	first_name VARCHAR(50) NOT NULL,
-	last_name VARCHAR(50) NOT NULL,
-	title title,
-	phone VARCHAR(20) NOT NULL,
-	email VARCHAR(355),
+	name VARCHAR(50) NOT NULL,
+	title title NOT NULL,
+	phone VARCHAR(30) NOT NULL,
 	preference_id INTEGER,
 	CONSTRAINT customer_preference_id_fk FOREIGN KEY (preference_id)
 		REFERENCES preference(id) 
 		ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+
+CREATE TABLE propertyOwner(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(50) NOT NULL,
+	title title NOT NULL,
+	phone VARCHAR(30) NOT NULL
+);
 CREATE TABLE propertyAddress(
 	id SERIAL PRIMARY KEY,
-	district VARCHAR(50) NOT NULL,
-	estate VARCHAR(50),
-	block VARCHAR(50) NOT NULL,
+	district_id INTEGER NOT NULL,
+	estate_id INTEGER NOT NULL,
+	block VARCHAR(3) NOT NULL,
 	floor INTEGER NOT NULL,
-	flat VARCHAR(3) NOT NULL
+	flat VARCHAR(3) NOT NULL,
+	CONSTRAINT propertyAddress_district_id_fk FOREIGN KEY (district_id)
+		REFERENCES district(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+	CONSTRAINT propertyAddress_estate_id_fk FOREIGN KEY (estate_id)
+		REFERENCES estate(id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE property(
@@ -70,32 +87,29 @@ CREATE TABLE property(
 	gross_floor_area INTEGER NOT NULL,
 	number_of_bedrooms INTEGER NOT NULL,
 	provide_car_park BOOLEAN NOT NULL,
-	selling_price NUMERIC(20,2),
-	rental_price NUMERIC(20,2),
+	selling_price NUMERIC(15,2),
+	rental_price NUMERIC(15,2),
 	for_transaction_type transactionType NOT NULL,
 	CONSTRAINT property_address_id_fk FOREIGN KEY (address_id)
 		REFERENCES propertyAddress(id)
 		ON UPDATE NO ACTION ON DELETE NO ACTION,
-		CONSTRAINT property_owner_id_fk FOREIGN KEY (owner_id)
-		REFERENCES customer(id)
+	CONSTRAINT property_owner_id_fk FOREIGN KEY (owner_id)
+		REFERENCES propertyOwner(id)
 		ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE transaction(
-	ref SERIAL PRIMARY KEY,
+	ref_no SERIAL PRIMARY KEY,
 	type transactionType NOT NULL,
 	transaction_date TIMESTAMP NOT NULL,
 	property_id INTEGER NOT NULL,
-	sold_price NUMERIC(20,2),
-	rental_price NUMERIC(20,2),
-	owner_id INTEGER NOT NULL,
+	sold_price NUMERIC(15,2),
+	rental_price NUMERIC(15,2),
 	customer_id INTEGER NOT NULL,
 	agent_id INTEGER NOT NULL,
-	commission  NUMERIC(20,2) NOT NULL,
+	commission  NUMERIC(15,2) NOT NULL,
 	CONSTRAINT transaction_property_id FOREIGN KEY (property_id)
 		REFERENCES property(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-	CONSTRAINT transaction_owner_id FOREIGN KEY (owner_id)
-		REFERENCES customer(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT transaction_customer_id FOREIGN KEY (customer_id)
 		REFERENCES customer(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT transaction_agent_id FOREIGN KEY (agent_id)
