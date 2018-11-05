@@ -2,28 +2,30 @@
 CREATE TYPE transactionType AS ENUM ('sale','rent','both');
 CREATE TYPE title AS ENUM ('Mr.','Ms.','Mrs.');
 
+CREATE TABLE hkpUser(
+  id SERIAL PRIMARY KEY UNIQUE,
+  username VARCHAR (50) UNIQUE NOT NULL,
+  password VARCHAR (50) NOT NULL,
+  created_on TIMESTAMP NOT NULL default current_timestamp,
+  last_login TIMESTAMP,
+  usergroup VARCHAR (50) NOT NULL
+);
 
 CREATE TABLE agent(
-	id SERIAL PRIMARY KEY UNIQUE,
+    agent_id SERIAL PRIMARY KEY UNIQUE,
 	branch_id INTEGER NOT NULL,
-	username VARCHAR (50) UNIQUE NOT NULL,
-	password VARCHAR (50) NOT NULL,
 	email VARCHAR (100) UNIQUE NOT NULL,
-	phone VARCHAR (100) NOT NULL,
-	created_on TIMESTAMP NOT NULL default current_timestamp,
-	usergroup VARCHAR (50) NOT NULL,
-	last_login TIMESTAMP
-);
+	phone VARCHAR (100) NOT NULL
+) INHERITS(hkpUser);
 
 CREATE TABLE branch(
 	id SERIAL PRIMARY KEY,
 	manager_id INTEGER NOT NULL,
-	address VARCHAR (300) NOT NULL,
-	CONSTRAINT branch_manager_id_fk FOREIGN KEY (manager_id)
-		REFERENCES agent (id)
-		ON UPDATE NO ACTION ON DELETE NO ACTION
+	address VARCHAR (300) NOT NULL
 );
-
+ALTER TABLE branch ADD CONSTRAINT branch_manager_id_fk FOREIGN KEY (manager_id)
+		REFERENCES agent (agent_id) DEFERRABLE INITIALLY DEFERRED;
+        
 ALTER TABLE agent ADD CONSTRAINT agent_branch_id_fk FOREIGN KEY (branch_id)
 		REFERENCES branch (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
@@ -113,6 +115,5 @@ CREATE TABLE transaction(
 	CONSTRAINT transaction_customer_id FOREIGN KEY (customer_id)
 		REFERENCES customer(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT transaction_agent_id FOREIGN KEY (agent_id)
-		REFERENCES agent(id) ON UPDATE NO ACTION ON DELETE NO ACTION	
+		REFERENCES agent(agent_id) ON UPDATE NO ACTION ON DELETE NO ACTION	
 );
-

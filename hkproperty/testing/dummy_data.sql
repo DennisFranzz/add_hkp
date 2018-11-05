@@ -1,10 +1,13 @@
+BEGIN TRANSACTION;
+
 INSERT INTO hkpUser(username,password,email,is_superuser) values('admin', 'admin', 'admin@hkp.com', true);
 
 INSERT INTO branch values(default);
 
-INSERT INTO agent(username,password,email,is_superuser,branch_id) values
-('agent1', 'agent1', 'agent1@hkp.com', false, 1),
-('agent2', 'agent2', 'agent2@hkp.com', false, 1)
+INSERT INTO agent(username,password,email,phone,usergroup,branch_id) values
+('agent0', 'agent0', 'agent0@hkp.com','50100123', 'admin', 1),
+('agent1', 'agent1', 'agent1@hkp.com','51150123', 'agent', 1),
+('agent2', 'agent2', 'agent2@hkp.com','50340123', 'branch_manager', 1)
 ;
 
 INSERT INTO customer(first_name, last_name, title, phone, email, preference_id) values
@@ -24,3 +27,5 @@ INSERT INTO property(owner_id, address_id, gross_floor_area, number_of_bedrooms,
 (2, 2, 300, 1, false, 2500000, null, 'sale'),
 (2, 3, 400, 2, false, 3000000, 10000, 'both')
 ;
+
+END;
