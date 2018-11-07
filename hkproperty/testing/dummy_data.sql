@@ -1,18 +1,41 @@
 BEGIN TRANSACTION;
 
-INSERT INTO hkpUser(username,password,email,is_superuser) values('admin', 'admin', 'admin@hkp.com', true);
+INSERT INTO hkpUser(username,password,usergroup) values
+('admin', 'admin', 'admin@hkp.com', 'admin');
 
-INSERT INTO branch values(default);
+INSERT INTO branch(manager_id,address) values
+(4,'branch address1'),
+(5,'branch address2');
 
-INSERT INTO agent(username,password,email,phone,usergroup,branch_id) values
-('agent0', 'agent0', 'agent0@hkp.com','50100123', 'admin', 1),
-('agent1', 'agent1', 'agent1@hkp.com','51150123', 'agent', 1),
-('agent2', 'agent2', 'agent2@hkp.com','50340123', 'branch_manager', 1)
+INSERT INTO agent(name, username,password,email,phone,usergroup,branch_id) values
+('Dennis Chan', 'dennischan', 'dennis', 'dennis@hkp.com','50100123', 'agent', 1),
+('Janice Mo', 'janicemo','janice', 'janice@hkp.com','51150123', 'agent', 2),
+('Candy Ko', 'candymo', 'candy@hkp.com','50340123', 'agent', 1),
+('Matt Ti', 'mattti', 'matt@hkp.com','39239109', 'branch_manager', 2),
+('Cilly Fu', 'cillyfu', 'cilly@hkp.com','39439109', 'branch_manager', 1)
 ;
 
-INSERT INTO customer(first_name, last_name, title, phone, email, preference_id) values
-('Andy', 'Chan', 'Mr.', '93929192', null, null),
-('Joey', 'Lo', 'Mrs.', '59192912', null, null)
+INSERT INTO district(name) values
+('Tsuen Wan'),
+('Aberdeen'),
+('Sha Tin'),
+('Wong Tai Sin'),
+('Kwai Tsing');
+
+INSERT INTO estate(name) values
+('Kwai Chung Estate'),
+('Lower Wong Tai Sin Estate'),
+('Yue Kwong Estate'),
+('Fuk Loi Estate'),
+('Shek Wai Kok Estate'),
+('Kwai Tsing Estate');
+
+INSERT INTO customer(name, title, phone, preference_id) values
+('Tommy Lee', 'Mr.', '93929192', 1),
+('Justin Bo', 'Mr.', '59192912', 2),
+('Ball Tsz', 'Mr.', '62939203', 3),
+('France Ko', 'Ms.', '93919313', 4),
+('May Yeung', 'Ms.', '63829392', 5)
 ;
 
 INSERT INTO propertyAddress(district, estate, block, floor, flat) values
