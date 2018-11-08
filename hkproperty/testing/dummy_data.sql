@@ -70,9 +70,9 @@ INSERT INTO property(owner_id, address_id, gross_floor_area, number_of_bedrooms,
     selling_price, rental_price, for_transaction_type) values
 (2, 1, 400, 1, true, 4000000, null, 'sale'),
 (2, 2, 450, 1, false, null, 10000, 'rent'),
-(1, 3, 300, 1, false, 2000000, null, 'sale'),
+(1, 3, 300, 1, false, 2000000, 8000, 'both'),
 (4, 4, 1200, 3, true, 14000000, null, 'sale'),
-(3, 5, 1400, 4, false, 20000000, null, 'sale'),
+(3, 5, 1400, 4, false, 20000000, 20000, 'both'),
 (5, 6, 850, 2, true, null, 15000, 'rent'),
 (5, 7, 750, 2, true, 7500000, null, 'sale'),
 (1, 8, 500, 2, true, 5000000, null, 'sale')
