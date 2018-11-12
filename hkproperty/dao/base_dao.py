@@ -15,9 +15,11 @@ class BaseDao:
 
         return result_list
 
-    def excute_query(self, sql, params):
+    def excute_query(self, sql, *params):
         engine = db.get_db()
         statement = text(sql)
         result_proxy = engine.execute(statement, params)
         result_list = self.result_proxy_to_list(result_proxy)
         return result_list
+
+

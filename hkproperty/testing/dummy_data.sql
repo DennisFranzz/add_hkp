@@ -31,8 +31,8 @@ INSERT INTO estate(name) values
 ('Kwai Tsing Estate');
 
 INSERT INTO preference(district_id, estate_id, buying_budget, rental_budget, transactionType) values
-(1, 3, 15000000, null, 'sale'),
-(3, 2, null, 3000, 'rent'),
+(1, null, 15000000, null, 'sale'),
+(4, 2, null, 30000, 'rent'),
 (2, 2, 6000000, 10000, 'both'),
 (2, 1, 7000000, 10000, 'both'),
 (1, 1, 8000000, 10000, 'both');
@@ -51,7 +51,7 @@ INSERT INTO customer(name, title, phone, preference_id) values
 INSERT INTO propertyAddress(district_id, estate_id, block, floor, flat) values
 (4, 2, 'M', 12, 'A'),
 (2, 3, 'A', 2, 'O'),
-(1, 4, '1', 5, '1'),
+(1, 3, '1', 5, '1'),
 (1, 5, '2', 4, '2'),
 (5, 6, 'A', 5, '3'),
 (4, 2, '3', 1, '4'),
@@ -80,10 +80,10 @@ INSERT INTO property(owner_id, address_id, gross_floor_area, number_of_bedrooms,
 
 INSERT INTO transaction( property_id, customer_id, agent_id, type, transaction_date, rental_price, sold_price, commission) values 
 (2, 3, 2, 'rent', current_timestamp, 240000, null, 20000),
-(2, 3, 2, 'rent', current_timestamp, null, 6000000, 120000),
-(2, 3, 2, 'rent', current_timestamp, null, 5000000, 100000),
-(2, 3, 2, 'rent', current_timestamp, null, 4500000, 90000),
-(2, 3, 2, 'rent', current_timestamp, null, 12000000, 240000),
-(2, 3, 2, 'rent', current_timestamp, null, 10000000, 200000);
+(1, 3, 2, 'sale', current_timestamp, null, 6000000, 120000),
+(3, 2, 2, 'sale', current_timestamp, null, 5000000, 100000),
+(4, 2, 3, 'sale', current_timestamp, null, 4500000, 90000),
+(5, 1, 3, 'sale', current_timestamp, null, 12000000, 240000),
+(7, 5, 3, 'sale', current_timestamp, null, 10000000, 200000);
 
 END;

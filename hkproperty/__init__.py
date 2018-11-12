@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, url_for, redirect
 
 from hkproperty import db
 from hkproperty.config import Config
@@ -32,10 +32,9 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+
+    #def index():
+        #return redirect(url_for('property.property_list'))
 
     from . import db
     db.init_app(app)
@@ -44,5 +43,5 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(property.bp)
 
-    #app.add_url_rule('/', endpoint='property_list')
+    #app.add_url_rule('/', endpoint='index')
     return app

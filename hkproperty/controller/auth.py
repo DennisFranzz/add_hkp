@@ -23,7 +23,7 @@ def login():
 
         error = None
         dao = BaseDao()
-        user_results = dao.excute_query(query_sql.QUERY_FIND_AGENT_BY_USERNAME, {'username': username})
+        user_results = dao.excute_query(query_sql.QUERY_FIND_USER_BY_USERNAME, {'username': username})
         user = None
         if user_results is None:
             error = 'Incorrect username.'
@@ -41,8 +41,8 @@ def login():
 
         if error is None:
             session.clear()
-            session['user_id'] = user['email']
-            return redirect(url_for('property.property_list'))
+            session['user_id'] = user['id']
+            return redirect(url_for('index'))
 
         flash(error)
 
@@ -58,7 +58,7 @@ def load_logged_in_user():
     else:
         dao = BaseDao()
         g.user = dao.excute_query(
-            query_sql.QUERY_FIND_USER_BY_EMAIL, {'email': user_id}
+            query_sql.QUERY_FIND_USER_BY_ID, {'id': user_id}
         )[0]
 
 
