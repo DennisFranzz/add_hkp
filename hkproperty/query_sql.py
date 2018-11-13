@@ -25,3 +25,10 @@ QUERY_FIND_PROPERTY = (
 )
 
 QUERY_LIST_TRANSACTION_TYPE = 'SELECT unnest(enum_range(NULL::transactiontype)) as transaction_type'
+
+QUERY_FIND_CUSTOMER = ('Select c.id, c.title, c.name, c.phone from customer as c '
+	'where CAST(c.id AS TEXT) like :id '
+	'and LOWER(c.name) like LOWER(:name) '
+	'and LOWER(c.phone) like LOWER(:phone) '
+	'order by c.id asc'
+)

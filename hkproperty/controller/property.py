@@ -31,7 +31,7 @@ def find_property(request):
         form_value['estate'] = request.args.get('estate')
 
     form_district = '%{}%'
-    if request.args.get('estate')is None:
+    if request.args.get('district')is None:
         form_district = form_district.format('')
         form_value['district'] = ''
     else:
