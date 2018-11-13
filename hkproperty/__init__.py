@@ -39,9 +39,10 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from hkproperty.controller import auth,property
+    from hkproperty.controller import auth,property,customer
     app.register_blueprint(auth.bp)
     app.register_blueprint(property.bp)
+    app.register_blueprint(customer.bp)
 
     #app.add_url_rule('/', endpoint='index')
     return app

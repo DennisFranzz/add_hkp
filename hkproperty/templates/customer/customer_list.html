@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Customer</li>
+            </ol>
+        </nav>
+            <form id="customer_search_form"
+                  action="{{ url_for('customer.customer_list') }}" method="get">
+                <div class="input-group  mb-3">
+                    <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
+                    <div class="col-sm-4">
+                        <input type="text" id="input_id" name="id" class="form-control"
+                               value="{% if form_value is defined %}{{ g.form_value['id'] }}{% endif %}"/>
+                    </div>
+                </div>
+                <div class="input-group  mb-3">
+                    <label for="input_name" class="col-sm-2 col-form-label">Name: </label>
+                    <div class="col-sm-4">
+                        <input type="text" id="input_name" name="name" class="form-control"
+                               value="{% if form_value is defined %}{{ g.form_value['name'] }}{% endif %}"/>
+                    </div>
+                </div>
+
+                <div class="input-group  mb-3">
+                    <label for="input_phone" class="col-sm-2 col-form-label">Phone: </label>
+                    <div class="col-sm-4">
+                        <input type="text" id="input_phone" name="phone" class="form-control"
+                               value="{% if form_value is defined %}{{ g.form_value['phone'] }}{% endif %}"/>
+                    </div>
+                </div>
+
+
+                    <button type="submit"  value="Submit" class="btn btn-primary">Submit</button>
+
+            </form>
+
+    </div>
+    <div style="margin-top: 15px;">
+
+        {{ table }}
+
+    </div>
+    </div>
+{% endblock %}

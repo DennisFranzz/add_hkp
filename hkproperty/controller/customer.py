@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, g
+from flask import Blueprint, render_template, request, g, url_for
 
 from hkproperty import query_sql
 from hkproperty.dao.base_dao import BaseDao
-from flask_table import Table, Col, BoolCol
+from flask_table import Table, Col, BoolCol, LinkCol
 
 bp = Blueprint('customer', __name__)
+
 
 @bp.route('/customer', methods=['GET'])
 def customer_list():
@@ -12,18 +13,20 @@ def customer_list():
         result_table = find_customer(request);
         return render_template('customer/customer_list.html', table=result_table)
     else:
-        return render_template('customer/customers_list.html')
-		
-def customer_details():
+        return render_template('customer/customer_list.html')
 
-	return
 
-		
+@bp.route('/customer/<int:id>/', methods=['GET'])
+def customer_details(id):
+
+    return
+
+
 def find_customer(request):
-    form_value ={}
+    form_value = {}
 
     form_id = '%{}%'
-    if request.args.get('id')is None:
+    if request.args.get('id') is None:
         form_id = form_id.format('')
         form_value['id'] = ''
     else:
@@ -31,7 +34,7 @@ def find_customer(request):
         form_value['id'] = request.args.get('id')
 
     form_name = '%{}%'
-    if request.args.get('estate')is None:
+    if request.args.get('name') is None:
         form_name = form_name.format('')
         form_value['name'] = ''
     else:
@@ -39,9 +42,9 @@ def find_customer(request):
         form_value['name'] = request.args.get('name')
 
     form_phone = '%{}%'
-    if request.args.get('phone')is None:
+    if request.args.get('phone') is None:
         form_phone = form_phone.format('')
-		form_value['phone'] = ''
+        form_value['phone'] = ''
     else:
         form_phone = form_phone.format(request.args.get('phone'))
         form_value['phone'] = request.args.get('phone')
@@ -65,7 +68,7 @@ class ItemTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
     thead_classes = ['thead-dark']
     id = Col('ID')
-	title = Col('Title')
+    title = Col('Title')
     name = Col('Name')
     phone = Col('Phone')
-    details = LinkCol('Details', 'details', url_kwargs=dict(id='id'))
+    details = LinkCol('Details', 'customer.customer_details', url_kwargs=dict(id='id'))

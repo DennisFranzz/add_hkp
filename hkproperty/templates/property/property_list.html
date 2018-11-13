@@ -4,22 +4,27 @@
 
 
 
-    <div class="result_table">
-
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Property</li>
+            </ol>
+        </nav>
             <form id="property_search_form"
                   action="{{ url_for('property.property_list') }}" method="get">
                 <div class="input-group  mb-3">
                     <label for="input_estate" class="col-sm-2 col-form-label">Estate: </label>
                     <div class="col-sm-4">
                         <input type="text" id="input_estate" name="estate" class="form-control"
-                               value="{{ g.form_value['estate'] }}"/>
+                               value="{% if form_value is defined %}{{g.form_value['estate']}}{% endif %}"/>
                     </div>
                 </div>
                 <div class="input-group  mb-3">
                     <label for="input_district" class="col-sm-2 col-form-label">District: </label>
                     <div class="col-sm-4">
                         <input type="text" id="input_district" name="district" class="form-control"
-                               value="{{ g.form_value['district'] }}"/>
+                               value="{% if form_value is defined %}{{ g.form_value['district'] }}{% endif %}"/>
                     </div>
                 </div>
 
@@ -27,7 +32,7 @@
                     <label for="input_owner_name" class="col-sm-2 col-form-label">Owner Name: </label>
                     <div class="col-sm-4">
                         <input type="text" id="input_owner_name" name="owner" class="form-control"
-                               value="{{ g.form_value['owner'] }}"/>
+                               value="{% if form_value is defined %}{{ g.form_value['owner'] }}{% endif %}"/>
                     </div>
                 </div>
                 <div class="input-group  mb-3">
@@ -35,7 +40,7 @@
                     <div class="col-sm-4">
                         <select class="form-control" id="input_type" name="type">
                             {% for item in trans_types %}
-                                <option {% if g.form_value['type'] == item.transaction_type %}selected{% endif %}>
+                                <option {% if form_value is defined and g.form_value['type'] == item.transaction_type %}selected{% endif %}>
                                     {{  item.transaction_type}}
                                 </option>
                             {% endfor %}

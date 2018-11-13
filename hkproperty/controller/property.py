@@ -20,7 +20,7 @@ def property_list():
 
 
 def find_property(request):
-    form_value ={}
+    form_value = {}
 
     form_estate = '%{}%'
     if request.args.get('estate')is None:
