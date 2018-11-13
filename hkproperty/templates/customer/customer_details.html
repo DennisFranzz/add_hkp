@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Customer</a></li>
+				<li class="breadcrumb-item active" aria-current="page"><a href="#">Details</a></li>
+            </ol>
+        </nav>
+    </div>
+	
+    <div style="margin-top: 15px;">
+		<p class="h5">Properties meet Customer's Preference</p>
+        {{ property_table }}
+
+    </div>
+    </div>
+{% endblock %}

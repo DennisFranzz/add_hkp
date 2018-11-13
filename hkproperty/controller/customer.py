@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, g, url_for
 
 from hkproperty import query_sql
 from hkproperty.dao.base_dao import BaseDao
+from hkproperty.controller import property
 from flask_table import Table, Col, BoolCol, LinkCol
 
 bp = Blueprint('customer', __name__)
@@ -18,8 +19,23 @@ def customer_list():
 
 @bp.route('/customer/<int:id>/', methods=['GET'])
 def customer_details(id):
-
-    return
+	error = None
+	customer_result = find_customer_by_id(id)
+	if customer_result is None:
+		 error = 'Innalid customer id.'
+	else:
+		customer = customer_result[0]
+	
+	if error is not None:
+		preference_id = customer['preference_id']
+		if preference_id is not None:
+			property_results = find_property_by_preference(preference_id)
+			property_table = property.build_table(property_results)
+			return render_template('customer/customer_details.html', property_table=property_table)
+		else
+			return render_template('customer/customer_details.html')
+	
+    #todo: error handle
 
 
 def find_customer(request):
@@ -54,17 +70,36 @@ def find_customer(request):
     form_object = {'id': form_id, 'name': form_name,'phone': form_phone}
 
     g.form_value = form_value
-    property_results = dao.excute_query(query_sql.QUERY_FIND_CUSTOMER, form_object)
-    table = build_table(property_results)
+    customer_results = dao.excute_query(query_sql.QUERY_FIND_CUSTOMER, form_object)
+    table = build_customer_table(customer_results)
     return table
 	
+
+def find_customer_by_id(id):
 	
-def build_table(result_dict):
-    table = ItemTable(result_dict)
+    dao = BaseDao()
+    form_object = {'id': id}
+
+    customer_results = dao.excute_query(query_sql.QUERY_FIND_CUSTOMER, form_object)
+	
+    #table = build_table(customer_results)
+	return customer_results
+	
+def find_property_by_preference(id):
+	dao = BaseDao()
+    form_object = {'prefId': id}
+	property_results = dao.excute_query(query_sql.QUERY_FIND_PROPERTY_BY_PREFERENCE, form_object)
+	
+	return property_results
+	
+	
+def build_customer_table(result_dict):
+    table = CustomerTable(result_dict)
     return table
 
 
-class ItemTable(Table):
+
+class CustomerTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
     thead_classes = ['thead-dark']
     id = Col('ID')
