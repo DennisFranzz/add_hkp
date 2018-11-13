@@ -4,6 +4,7 @@
 
 
 
+
     <div class="">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -13,11 +14,66 @@
             </ol>
         </nav>
     </div>
-	
+
+    <p class="h5">Customer</p>
+    <form>
+        <div class="input-group row">
+            <label for="info_id" class="col-sm-2 col-form-label">ID</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_id" value="{{ customer.id }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_name" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_name" value="{{ customer.title }} {{ customer.name }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_phone" class="col-sm-2 col-form-label">Phone</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_phone" value="{{ customer.phone }}">
+            </div>
+        </div>
+    </form>
+    <p class="h5">Preference</p>
+    <form>
+        <div class="input-group row">
+            <label for="pref_estate" class="col-sm-2 col-form-label">Estate</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="pref_estate" value="{{ customer.estate }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="pref_district" class="col-sm-2 col-form-label">District</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_name" value="{{ customer.district}}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="pref_buying_budget" class="col-sm-2 col-form-label">Buying Budget</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="pref_buying_budget" value="{{ customer.buying_budget }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="pref_rental_budget" class="col-sm-2 col-form-label">Rental Budget</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="pref_rental_budget" value="{{ customer.rental_budget }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="pref_transactiontype" class="col-sm-2 col-form-label">Transaction Type</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="pref_transactiontype" value="{{ customer.transactiontype }}">
+            </div>
+        </div>
+    </form>
+
     <div style="margin-top: 15px;">
 		<p class="h5">Properties meet Customer's Preference</p>
         {{ property_table }}
 
     </div>
-    </div>
+
 {% endblock %}

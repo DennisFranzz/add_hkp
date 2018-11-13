@@ -1,7 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
 
+            $(".submit").on('click', function(e) {
+                var form = $('#customer_search_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $('#result_table_div').html(data) // show response from the php script.
+                    }
+                });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+    </script>
 
 
     <div class="">
@@ -12,19 +32,19 @@
             </ol>
         </nav>
             <form id="customer_search_form"
-                  action="{{ url_for('customer.customer_list') }}" method="get">
+                  action="{{ url_for('customer.customer_list_filter') }}" method="get">
                 <div class="input-group  mb-3">
                     <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
                     <div class="col-sm-4">
                         <input type="text" id="input_id" name="id" class="form-control"
-                               value="{% if form_value is defined %}{{ g.form_value['id'] }}{% endif %}"/>
+                               value=""/>
                     </div>
                 </div>
                 <div class="input-group  mb-3">
                     <label for="input_name" class="col-sm-2 col-form-label">Name: </label>
                     <div class="col-sm-4">
                         <input type="text" id="input_name" name="name" class="form-control"
-                               value="{% if form_value is defined %}{{ g.form_value['name'] }}{% endif %}"/>
+                               value=""/>
                     </div>
                 </div>
 
@@ -32,19 +52,19 @@
                     <label for="input_phone" class="col-sm-2 col-form-label">Phone: </label>
                     <div class="col-sm-4">
                         <input type="text" id="input_phone" name="phone" class="form-control"
-                               value="{% if form_value is defined %}{{ g.form_value['phone'] }}{% endif %}"/>
+                               value=""/>
                     </div>
                 </div>
 
 
-                    <button type="submit"  value="Submit" class="btn btn-primary">Submit</button>
+                    <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
 
             </form>
 
     </div>
-    <div style="margin-top: 15px;">
+    <div id="result_table_div" style="margin-top: 15px;">
 
-        {{ table }}
+
 
     </div>
     </div>

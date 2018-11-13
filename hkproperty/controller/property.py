@@ -10,14 +10,17 @@ bp = Blueprint('property', __name__)
 @bp.route('/', methods=['GET'])
 @bp.route('/property', methods=['GET'])
 def property_list():
-
     trans_type_list = list_trans_type()
+    return render_template('property/property_list.html', trans_types=trans_type_list)
+
+
+@bp.route('/property/filter', methods=['GET'])
+def property_list_filter():
     if len(request.args) >0:
         result_table = find_property(request);
-        return render_template('property/property_list.html', table=result_table, trans_types=trans_type_list)
+        return result_table.__html__()
     else:
-        return render_template('property/property_list.html', trans_types=trans_type_list)
-
+        return
 
 def find_property(request):
     form_value = {}
@@ -76,6 +79,7 @@ def build_table(result_dict):
 class ItemTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
     thead_classes = ['thead-dark']
+    property_id = Col('ID')
     district = Col('District')
     estate = Col('Estate')
     block = Col('Block')

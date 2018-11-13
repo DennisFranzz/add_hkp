@@ -11,7 +11,7 @@ QUERY_FIND_PROPERTY_BY_TRANS_TYPE = "Select p.id, p.owner_id, p.address_id, p.gr
 "where p.for_transaction_type = :transType;"
 
 QUERY_FIND_PROPERTY = (
-    'select dist.name as District, est.name as Estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area,'
+    'select p.id as property_id, dist.name as District, est.name as Estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area,'
     'p.number_of_bedrooms as bedrooms, p.provide_car_park as hasCarPark, p.selling_price, p.rental_price, '
     'p.for_transaction_type, owner.name as Owner ' 
     'from property as p  join propertyAddress as pa on (p.address_id = pa.id) ' 
@@ -25,38 +25,43 @@ QUERY_FIND_PROPERTY = (
 )
 
 QUERY_FIND_CUSTOMER_BY_ID = (
-	'select c.name as name, '
-	'from customer as c join preference as pref on (c.preference_id = pref.id) '
-	'where c.id = :id '
+    'select c.name as name, c.title, c.id, c.preference_id, c.phone, '
+    'pref.transactionType, pref.buying_budget, pref.rental_budget, '
+    'dist.name as district, est.name as estate '
+    'from customer as c join preference as pref on (c.preference_id = pref.id) '
+    'left join district as dist on (pref.district_id = dist.id) '
+    'left join estate as est on (pref.estate_id = est.id) '
+    'where c.id = :id '
 )
 
 QUERY_FIND_PROPERTY_BY_PREFERENCE = (
-	'select p.id as property_id, dist.name as district, ' 
-	'est.name as estate, p.gross_floor_area as area, '
-	'p.number_of_bedrooms as bedrooms, p.provide_car_park as provide_car_park, '
-	'p.selling_price,p.rental_price, p.for_transaction_type, '
-	'po.id as owner_id,po.name as owner '
-	'from preference as pref  '
-	'join property as p on (p.selling_price <= pref.buying_budget '
-	'    and (p.for_transaction_type = \'both\' or p.for_transaction_type= \'sale\') '
-	'    and (pref.transactionType = \'both\'   or pref.transactionType= \'sale\')) '
-	'join propertyAddress as pa on(p.address_id = pa.id'
-	'    and (pref.district_id is null or pa.district_id = pref.district_id)'
-	'    and (pref.estate_id is null or pa.estate_id = pref.estate_id )'
-	'    )    '
-	'join propertyOwner as po on (p.owner_id = po.id) '
-	'join district as dist on (pa.district_id = dist.id) ' 
-	'join estate as est on (pa.estate_id = est.id) '
-	'where pref.id = :prefId '
-	'order by property_id asc '
+    'select p.id as property_id, dist.name as district, '
+    'est.name as estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area, '
+    'p.number_of_bedrooms as bedrooms, p.provide_car_park as hascarpark, '
+    'p.selling_price,p.rental_price, p.for_transaction_type, '
+    'po.id as owner_id,po.name as owner '
+    'from preference as pref  '
+    'join property as p on (p.selling_price <= pref.buying_budget '
+    '    and (p.for_transaction_type = \'both\' or p.for_transaction_type= \'sale\') '
+    '    and (pref.transactionType = \'both\'   or pref.transactionType= \'sale\')) '
+    'join propertyAddress as pa on(p.address_id = pa.id'
+    '    and (pref.district_id is null or pa.district_id = pref.district_id)'
+    '    and (pref.estate_id is null or pa.estate_id = pref.estate_id )'
+    '    )    '
+    'join propertyOwner as po on (p.owner_id = po.id) '
+    'join district as dist on (pa.district_id = dist.id) '
+    'join estate as est on (pa.estate_id = est.id) '
+    'where pref.id = :prefId '
+    'order by property_id asc '
 )
 
 QUERY_LIST_TRANSACTION_TYPE = 'SELECT unnest(enum_range(NULL::transactiontype)) as transaction_type'
 
-QUERY_FIND_CUSTOMER = ('Select c.id, c.title, c.name, c.phone from customer as c '
-	'where CAST(c.id AS TEXT) like :id '
-	'and LOWER(c.name) like LOWER(:name) '
-	'and LOWER(c.phone) like LOWER(:phone) '
-	'order by c.id asc'
+QUERY_FIND_CUSTOMER = (
+    'Select c.id, c.title, c.name, c.phone from customer as c '
+    'where CAST(c.id AS TEXT) like :id '
+    'and LOWER(c.name) like LOWER(:name) '
+    'and LOWER(c.phone) like LOWER(:phone) '
+    'order by c.id asc'
 )
 

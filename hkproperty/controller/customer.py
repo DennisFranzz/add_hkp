@@ -10,32 +10,38 @@ bp = Blueprint('customer', __name__)
 
 @bp.route('/customer', methods=['GET'])
 def customer_list():
+    return render_template('customer/customer_list.html')
+
+
+@bp.route('/customer/filter', methods=['GET'])
+def customer_list_filter():
     if len(request.args) >0:
-        result_table = find_customer(request);
-        return render_template('customer/customer_list.html', table=result_table)
+        result_table = find_customer(request)
+        return result_table.__html__()
     else:
-        return render_template('customer/customer_list.html')
+        return
 
 
 @bp.route('/customer/<int:id>/', methods=['GET'])
 def customer_details(id):
-	error = None
-	customer_result = find_customer_by_id(id)
-	if customer_result is None:
-		 error = 'Innalid customer id.'
-	else:
-		customer = customer_result[0]
-	
-	if error is not None:
-		preference_id = customer['preference_id']
-		if preference_id is not None:
-			property_results = find_property_by_preference(preference_id)
-			property_table = property.build_table(property_results)
-			return render_template('customer/customer_details.html', property_table=property_table)
-		else
-			return render_template('customer/customer_details.html')
-	
-    #todo: error handle
+    error = None
+    customer_result = find_customer_by_id(id)
+    if customer_result is None:
+        error = 'Innalid customer id.'
+    else:
+        customer = customer_result[0]
+
+    if error is None:
+        preference_id = customer['preference_id']
+        if preference_id is not None:
+            property_results = find_property_by_preference(preference_id)
+            property_table = property.build_table(property_results)
+            return render_template('customer/customer_details.html', property_table=property_table, customer=customer)
+        else:
+            return render_template('customer/customer_details.html', customer=customer)
+    else:
+        #todo error handle
+        return error
 
 
 def find_customer(request):
@@ -73,30 +79,25 @@ def find_customer(request):
     customer_results = dao.excute_query(query_sql.QUERY_FIND_CUSTOMER, form_object)
     table = build_customer_table(customer_results)
     return table
-	
 
-def find_customer_by_id(id):
-	
+
+def find_customer_by_id(customer_id):
     dao = BaseDao()
-    form_object = {'id': id}
+    form_object = {'id': customer_id}
+    customer_results = dao.excute_query(query_sql.QUERY_FIND_CUSTOMER_BY_ID, form_object)
+    return customer_results
 
-    customer_results = dao.excute_query(query_sql.QUERY_FIND_CUSTOMER, form_object)
-	
-    #table = build_table(customer_results)
-	return customer_results
-	
-def find_property_by_preference(id):
-	dao = BaseDao()
-    form_object = {'prefId': id}
-	property_results = dao.excute_query(query_sql.QUERY_FIND_PROPERTY_BY_PREFERENCE, form_object)
-	
-	return property_results
-	
-	
+
+def find_property_by_preference(pref_id):
+    dao = BaseDao()
+    form_object = {'prefId': pref_id}
+    property_results = dao.excute_query(query_sql.QUERY_FIND_PROPERTY_BY_PREFERENCE, form_object)
+    return property_results
+
+
 def build_customer_table(result_dict):
     table = CustomerTable(result_dict)
     return table
-
 
 
 class CustomerTable(Table):
