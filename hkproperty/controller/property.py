@@ -7,7 +7,7 @@ from flask_table import Table, Col, BoolCol
 bp = Blueprint('property', __name__)
 
 
-@bp.route('/', methods=['GET'])
+
 @bp.route('/property', methods=['GET'])
 def property_list():
     trans_type_list = list_trans_type()
@@ -17,7 +17,7 @@ def property_list():
 @bp.route('/property/filter', methods=['GET'])
 def property_list_filter():
     if len(request.args) >0:
-        result_table = find_property(request);
+        result_table = find_property(request)
         return result_table.__html__()
     else:
         return

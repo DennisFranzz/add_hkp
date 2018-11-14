@@ -4,6 +4,8 @@ QUERY_FIND_USER_BY_ID = "Select * from hkpUser where id = :id;"
 
 QUERY_FIND_AGENT_BY_USERNAME = "Select * from agent where username = :username;"
 
+QUERY_FIND_AGENT_BY_ID = "Select * from agent where agent_id = :id;"
+
 QUERY_FIND_PROPERTY_BY_TRANS_TYPE = "Select p.id, p.owner_id, p.address_id, p.gross_floor_area,"
 "p.number_of_bedrooms, p.provide_car_park, p.selling_price, p.rental_price,"
 "p.for_transaction_type, pa.district, pa.estate, pa.block, pa.floor, pa.flat"
@@ -65,3 +67,24 @@ QUERY_FIND_CUSTOMER = (
     'order by c.id asc'
 )
 
+
+QUERY_FIND_TRANSACTION_BY_AGENT = (
+    'select t.ref_no, t.type, t.transaction_date, t.property_id, t.sold_price, t.rental_price, '
+    't.customer_id, t.agent_id, t.commission '
+    'from transaction as t '
+    'where t.agent_id = :agent_id '
+    'and t.type like :type '
+)
+
+
+QUERY_FIND_TRANSACTION_BY_BRANCH = (
+    'select t.ref_no, t.type, t.transaction_date, t.property_id, t.sold_price, t.rental_price, '
+    't.customer_id, t.agent_id, t.commission '
+    'from transaction as t '
+    'where t.agent_id in (select agent_id from agent where branch_id = :branch_id  )'
+    'and t.type like :type '   
+)
+
+QUERY_FIND_TRANSACTION = (
+
+)

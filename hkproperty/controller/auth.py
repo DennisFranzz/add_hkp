@@ -24,7 +24,9 @@ def login():
         error = None
         dao = BaseDao()
         user_results = dao.excute_query(query_sql.QUERY_FIND_USER_BY_USERNAME, {'username': username})
+        agent_result = dao.excute_query(query_sql.QUERY_FIND_AGENT_BY_USERNAME, {'username': username})
         user = None
+        agent = None
         if user_results is None:
             error = 'Incorrect username.'
         else:
@@ -33,15 +35,17 @@ def login():
             print(result_password+' vs '+password)
             if not (result_password == password):
                 if check_password_hash(result_password, password):
+                    agent = agent_result[0]
                     pass
                 else:
-                    print('a')
                     error = 'Incorrect password.'
 
 
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            if agent is not None:
+                session['agent_id'] = agent['agent_id']
             return redirect("/")
 
         flash(error)
@@ -52,6 +56,7 @@ def login():
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
+    agent_id = session.get('agent_id')
 
     if user_id is None:
         g.user = None
@@ -59,6 +64,14 @@ def load_logged_in_user():
         dao = BaseDao()
         g.user = dao.excute_query(
             query_sql.QUERY_FIND_USER_BY_ID, {'id': user_id}
+        )[0]
+
+    if agent_id is None:
+        g.agent = None
+    else:
+        dao = BaseDao()
+        g.agent = dao.excute_query(
+            query_sql.QUERY_FIND_AGENT_BY_ID, {'id': agent_id}
         )[0]
 
 
@@ -72,6 +85,18 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+def agent_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        if g.agent is None:
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)
