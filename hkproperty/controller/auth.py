@@ -101,8 +101,16 @@ def agent_required(view):
                 return redirect(url_for('auth.login'))
             else:
                 return view(**kwargs)
+    return wrapped_view
 
-
-
-
+def branch_manager_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        else:
+            if g.agent is None or g.agent['usergroup'] is not 'branchg_manager':
+                return redirect(url_for('auth.login'))
+            else:
+                return view(**kwargs)
     return wrapped_view

@@ -4,9 +4,6 @@
 
     <script>
         // wait for the DOM to be loaded
-
-
-
         $(function() {
 
             $.ajax({
@@ -47,6 +44,48 @@
             </ol>
         </nav>
     </div>
+
+    <form>
+        <div class="input-group row">
+            <label for="info_id" class="col-sm-2 col-form-label">ID</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_id" value="{{ g.agent['agent_id'] }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_branch_id" class="col-sm-2 col-form-label">Branch ID</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_id" value="{{ g.agent['branch_id'] }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_branch_address" class="col-sm-2 col-form-label">Branch Address</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_address" value="{{ g.agent['address'] }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_name" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_name" value="{{ g.agent['name'] }}">
+            </div>
+        </div>
+
+        <div class="input-group row">
+            <label for="info_email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_email" value="{{ g.agent['email'] }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_phone" class="col-sm-2 col-form-label">Phone</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="info_phone" value="{{ g.agent['phone'] }}">
+            </div>
+        </div>
+    </form>
+
+    <p class="h4">Transactions</p>
 
     <div id="result_table_div">
 

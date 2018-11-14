@@ -17,10 +17,12 @@ def agent_home():
 @bp.route('/transaction', methods=['GET'])
 @agent_required
 def transaction_list_filter():
-
     result_table = find_transaction(request)
     return result_table.__html__()
 
+@branch_manager_required
+def my_branch_page():
+    return
 
 
 def find_transaction(request):
@@ -50,5 +52,3 @@ class TransactionTable(Table):
     rental_price = Col('Rental Price')
     customer_id = Col('Customer')
     commission = Col('Commission')
-
-
