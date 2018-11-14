@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <script>
+        // wait for the DOM to be loaded
+
+
+
+        $(function() {
+
+            $.ajax({
+                type: "GET",
+                url: '{{ url_for('agent.transaction_list_filter') }}',
+                //data: form.serialize(), // serializes the form's elements.
+                success: function(data)
+                {
+                    $('#result_table_div').html(data) // show response from the php script.
+                }
+            });
+
+            $(".submit").on('click', function(e) {
+                var form = $('#property_search_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $('#result_table_div').html(data) // show response from the php script.
+                    }
+                });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+    </script>
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+
+            </ol>
+        </nav>
+    </div>
+
+    <div id="result_table_div">
+
+
+    </div>
+
+{% endblock %}

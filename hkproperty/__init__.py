@@ -4,6 +4,7 @@ from flask import Flask, url_for, redirect
 
 from hkproperty import db
 from hkproperty.config import Config
+from hkproperty.controller import agent
 
 
 def create_app(test_config=None):
@@ -43,6 +44,6 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(property.bp)
     app.register_blueprint(customer.bp)
-
+    app.register_blueprint(agent.bp)
     #app.add_url_rule('/', endpoint='index')
     return app

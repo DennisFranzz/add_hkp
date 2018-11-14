@@ -35,13 +35,13 @@ def login():
             print(result_password+' vs '+password)
             if not (result_password == password):
                 if check_password_hash(result_password, password):
-                    agent = agent_result[0]
                     pass
                 else:
                     error = 'Incorrect password.'
 
 
         if error is None:
+            agent = agent_result[0]
             session.clear()
             session['user_id'] = user['id']
             if agent is not None:
@@ -96,9 +96,13 @@ def agent_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
-        if g.agent is None:
-            return redirect(url_for('auth.login'))
+        else:
+            if g.agent is None:
+                return redirect(url_for('auth.login'))
+            else:
+                return view(**kwargs)
 
-        return view(**kwargs)
+
+
 
     return wrapped_view

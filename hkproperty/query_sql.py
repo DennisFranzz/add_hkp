@@ -73,7 +73,7 @@ QUERY_FIND_TRANSACTION_BY_AGENT = (
     't.customer_id, t.agent_id, t.commission '
     'from transaction as t '
     'where t.agent_id = :agent_id '
-    'and t.type like :type '
+    'and CAST(t.type AS TEXT) like :type '
 )
 
 
@@ -82,7 +82,7 @@ QUERY_FIND_TRANSACTION_BY_BRANCH = (
     't.customer_id, t.agent_id, t.commission '
     'from transaction as t '
     'where t.agent_id in (select agent_id from agent where branch_id = :branch_id  )'
-    'and t.type like :type '   
+    'and CAST(t.type AS TEXT) like :type '
 )
 
 QUERY_FIND_TRANSACTION = (
