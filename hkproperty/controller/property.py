@@ -88,8 +88,8 @@ class ItemTable(Table):
     area = Col('Gross area sq. ft.')
     bedrooms = Col('Bedrooms')
     hascarpark = BoolCol('Provide Car Park', yes_display='Y', no_display='N')
-    selling_price = Col('Selling Price')
-    rental_price = Col('Rental Price')
+    selling_price = Col('Selling Price', column_html_attrs={'class': 'price'})
+    rental_price = Col('Rental Price', column_html_attrs={'class': 'price'})
     for_transaction_type = Col('Transaction Type')
     owner = Col('Owner')
 
