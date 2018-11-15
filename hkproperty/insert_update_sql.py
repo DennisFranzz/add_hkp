@@ -88,3 +88,25 @@ UPSERT_TRANSACTION = (
 	'sold_price = :sold_price, commission = :commission'
 	';'
 )
+
+DELETE_HKPUSER = 'DELETE FROM hkpUser WHERE id = :id;'
+
+DELETE_AGENT = 'DELETE FROM agent WHERE id = :id;'
+
+DELETE_BRANCH = 'DELETE FROM branch WHERE id = :id;'
+
+DELETE_DISTRICT = 'DELETE FROM district WHERE id = :id;'
+
+DELETE_ESTATE = 'DELETE FROM estate WHERE id = :id;'
+
+DELETE_PREFERENCE = 'DELETE FROM preference WHERE id = :id;'
+
+DELETE_CUSTOMER = 'DELETE FROM customer WHERE id = :id;'
+
+DELETE_PROPERTY_ADDRESS = 'DELETE FROM propertyAddress WHERE id = :id;'
+
+DELETE_PROPERTY_OWNER = 'DELETE FROM propertyOwner WHERE id = :id;'
+
+DELETE_PROPERTY = 'DELETE FROM property WHERE id = :id;'
+
+DELETE_TRANSACTION = 'DELETE FROM transaction WHERE ref_no = :ref_no;'
