@@ -16,7 +16,7 @@ QUERY_FIND_AGENT_BY_ID = (
     'where a.agent_id = :id;'
 )
 
-QUERY_FIND_AGENT_BY_ID = (
+QUERY_FIND_AGENT_BY_BRANCH = (
     QUERY_FIND_AGENT
     'where b.id = :branch_id;'
 )

@@ -20,9 +20,19 @@ def transaction_list_filter():
     result_table = find_transaction(request)
     return result_table.__html__()
 
-@branch_manager_required
+@bp.route('/mybranch', methods=['GET'])
+@agent_required
 def my_branch_page():
-    return
+    return render_template('agent/mybranch.html', agents = find_agent_by_branch(g.agent['agent_id']))
+
+
+def find_agent_by_branch(id):
+    error = None
+    dao = BaseDao()
+    form_object = {'branch_id':id}
+    transaction_results = dao.excute_query(query_sql.QUERY_FIND_AGENT_BY_BRANCH, form_object)
+    table = build_agent_table(transaction_results)
+    return table
 
 
 def find_transaction(request):
@@ -52,3 +62,17 @@ class TransactionTable(Table):
     rental_price = Col('Rental Price')
     customer_id = Col('Customer')
     commission = Col('Commission')
+
+
+def build_agent_table(result_dict):
+    table = AgentTable(result_dict)
+    return table
+
+
+class AgentTable(Table):
+    classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
+    thead_classes = ['thead-dark']
+    agent_id = Col('ID')
+    name = Col('name')
+    email = Col('email')
+    phone = Col('phone')
