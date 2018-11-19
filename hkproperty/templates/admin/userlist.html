@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
+
+            $(".submit").on('click', function(e) {
+                var form = $('#user_search_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $('#result_table_div').html(data) // show response from the php script.
+                    }
+                });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+    </script>
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="#">My Branch</a></li>
+
+            </ol>
+        </nav>
+    </div>
+
+    <form id="user_search_form"
+          action="{{ url_for('user.user_list_filter') }}" method="get">
+        <div class="input-group  mb-3">
+            <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
+            <div class="col-sm-4">
+                <input type="text" id="input_id" name="id" class="form-control"
+                       value=""/>
+            </div>
+        </div>
+        <div class="input-group  mb-3">
+            <label for="input_username" class="col-sm-2 col-form-label">Username: </label>
+            <div class="col-sm-4">
+                <input type="text" id="input_username" name="username" class="form-control"
+                       value=""/>
+            </div>
+        </div>
+
+
+        <div class="input-group  mb-3">
+            <label for="input_usergroup" class="col-sm-2 col-form-label">Usergroup: </label>
+            <div class="col-sm-4">
+                <select class="form-control" id="input_usergroup" name="usergroup">
+                    <option>admin</option>
+                    <option>agent</option>
+                    <option>branch_manager</option>
+
+                </select>
+            </div>
+        </div>
+
+            <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
+
+    </form>
+    <p class="h4">User List</p>
+
+    <div id="result_table_div">
+        {{ agents }}
+
+    </div>
+
+{% endblock %}

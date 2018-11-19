@@ -2,6 +2,10 @@ QUERY_FIND_USER_BY_USERNAME = "Select * from hkpUser where username = :username;
 
 QUERY_FIND_USER_BY_ID = "Select * from hkpUser where id = :id;"
 
+QUERY_FIND_ALL_USER = "Select id, username, usergroup from hkpUser order by id;"
+
+QUERY_FIND_LAST_USER_ID = "Select id from hkpUser order by id desc limit 1;"
+
 QUERY_FIND_AGENT = (
     'Select a.id as id, a.agent_id as agent_id, a.name as name, a.email as email, a.phone as phone, '
     'a.branch_id as branch_id, b.address as address from agent as a join branch as b on (a.branch_id = b.id) '
@@ -128,7 +132,7 @@ QUERY_BRANCH_REPORT = (
     'sum(rental_price) FILTER(where type = \'rent\') as total_rent_price, '
     'sum(commission) FILTER(where type = \'rent\') as total_rent_comm '
     'FROM transaction as t join agent as a on(t.agent_id = a.agent_id) '
-    'where a.branch_id = :branch_id ' 
+    'where a.branch_id = :branch_id '
     'group by t.agent_id, a.name order by t.agent_id;'
 )
 
@@ -142,6 +146,6 @@ QUERY_BRANCH_REPORT_BRANCH_SUMMARY = (
     'sum(rental_price) FILTER(where type = \'rent\') as total_rent_price, '
     'sum(commission) FILTER(where type = \'rent\') as total_rent_comm '
     'FROM transaction as t join agent as a on(t.agent_id = a.agent_id) '
-    'where a.branch_id = :branch_id ' 
+    'where a.branch_id = :branch_id '
     'group by a.branch_id, a.name'
 )

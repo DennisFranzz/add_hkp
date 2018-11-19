@@ -30,14 +30,26 @@
     <div class="row">
 
         <div class="menu col-2">
+            {% if g.user['usergroup'] == 'admin'%}
+            <div class="list-group">
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">User</a>
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">Agent</a>
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">Customer</a>
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">Property Owner</a>
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">Property</a>
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">Transaction</a>
+                <a href="{{ url_for('admin.user_list') }}" class="list-group-item list-group-item-action">Estate</a>
+            </div>
+            {% else %}
             <div class="list-group">
                 <a href="{{ url_for('agent.my_branch_page') }}" class="list-group-item list-group-item-action">My Branch</a>
                 <a href="{{ url_for('property.property_list') }}" class="list-group-item list-group-item-action">
                     Property
                 </a>
                 <a href="{{ url_for('customer.customer_list') }}" class="list-group-item list-group-item-action">Customer</a>
-
             </div>
+
+            {% endif %}
 
         </div>
 
