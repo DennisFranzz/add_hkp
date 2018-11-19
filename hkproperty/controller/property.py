@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request, g
 
 from hkproperty import query_sql
+from hkproperty.controller.table import PriceCol
+
 from hkproperty.dao.base_dao import BaseDao
-from flask_table import Table, Col, BoolCol
+from flask_table import Table, Col, BoolCol, LinkCol
 
 bp = Blueprint('property', __name__)
 
@@ -17,12 +19,12 @@ def property_list():
 @bp.route('/property/filter', methods=['GET'])
 def property_list_filter():
     if len(request.args) >0:
-        result_table = find_property(request)
+        result_table = find_property(request, False)
         return result_table.__html__()
     else:
         return
 
-def find_property(request):
+def find_property(request, isAdmin):
     form_value = {}
 
     form_estate = '%{}%'
@@ -61,7 +63,10 @@ def find_property(request):
 
     g.form_value = form_value
     property_results = dao.excute_query(query_sql.QUERY_FIND_PROPERTY, form_object)
-    table = build_table(property_results)
+    if isAdmin:
+        table = build_admin_table(property_results)
+    else:
+        table = build_table(property_results)
     return table
 
 
@@ -72,11 +77,15 @@ def list_trans_type():
 
 
 def build_table(result_dict):
-    table = ItemTable(result_dict)
+    table = PropertyTable(result_dict)
     return table
 
 
-class ItemTable(Table):
+def build_admin_table(result_dict):
+    table = AdminPropertyTable(result_dict )
+    return table
+
+class PropertyTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
     thead_classes = ['thead-dark']
     property_id = Col('ID')
@@ -92,3 +101,8 @@ class ItemTable(Table):
     rental_price = PriceCol('Rental Price', column_html_attrs={'class': 'price'})
     for_transaction_type = Col('Transaction Type')
     owner = Col('Owner')
+
+
+class AdminPropertyTable(PropertyTable):
+    update = LinkCol('Update', 'admin.maintain_property', url_kwargs=dict(id='property_id'))
+    delete = LinkCol('Delete', 'admin.delete_property', column_html_attrs={'class': 'delete'})

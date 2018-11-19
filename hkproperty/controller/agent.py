@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, g, url_for
 
 from hkproperty import query_sql
 from hkproperty.controller.auth import agent_required, branch_manager_required
+from hkproperty.controller.table import PriceCol
 from hkproperty.dao.base_dao import BaseDao
 from hkproperty.controller import property
 from flask_table import Table, Col, BoolCol, LinkCol, DateCol, DatetimeCol, NestedTableCol
@@ -98,11 +99,6 @@ class TransactionTable(Table):
 class TransReportAgentTable(Table):
     agent_id = Col('Agent ID')
     name = Col('Agent Name')
-
-class PriceCol(Col):
-    def td_format(self, content):
-        return format_price(content)
-
 
 class TransReportTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']

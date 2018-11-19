@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
+
+            $(".submit").on('click', function(e) {
+                var form = $('#property_search_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $('#result_table_div').html(data) // show response from the php script.
+                    }
+                });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+    </script>
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Property</li>
+            </ol>
+        </nav>
+        <form id="property_search_form"
+              action="{{ url_for('admin.property_list_filter') }}" method="get">
+            <div class="input-group  mb-3">
+                <label for="input_estate" class="col-sm-2 col-form-label">Estate: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_estate" name="estate" class="form-control"
+                           value=""/>
+                </div>
+            </div>
+            <div class="input-group  mb-3">
+                <label for="input_district" class="col-sm-2 col-form-label">District: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_district" name="district" class="form-control"
+                           value=""/>
+                </div>
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_owner_name" class="col-sm-2 col-form-label">Owner Name: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_owner_name" name="owner" class="form-control"
+                           value=""/>
+                </div>
+            </div>
+            <div class="input-group  mb-3">
+                <label for="input_type" class="col-sm-2 col-form-label">Type: </label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="input_type" name="type">
+                        {% for item in trans_types %}
+                            <option >
+                                {{  item.transaction_type}}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+            </div>
+
+            <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
+
+        </form>
+
+    </div>
+    <div id="result_table_div" style="margin-top: 15px;">
+
+
+
+    </div>
+    </div>
+{% endblock %}

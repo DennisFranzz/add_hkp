@@ -17,11 +17,34 @@
                     success: function(data)
                     {
                         $('#result_table_div').html(data) // show response from the php script.
+                        $('#result_table_div').show();
+                        $('#result_table_div .delete').on('click', function(e){
+
+                            e.preventDefault();
+                            if (confirm('Are you sure to delete record?')) {
+                                // Save it!
+                                $.post('{{ url_for('admin.delete_user') }}',
+                                    {"id":$(this).parent().find('td.col-id').html()},
+                                    function(data){
+                                        if(data > 0){
+                                            alert('delete success');
+                                            window.location='{{ url_for('admin.user_list') }}'
+                                        }
+                                    }
+                                )
+                            } else {
+                                // Do nothing!
+                            }
+                        });
                     }
                 });
                 e.preventDefault(); // avoid to execute the actual submit of the form.
             });
+            $('.add_user').on('click', function(){
+                window.location = '{{ url_for('admin.maintain_user') }}'
+            })
         });
+
     </script>
 
 
@@ -29,15 +52,15 @@
     <div class="">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="#">My Branch</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">User List</li>
 
             </ol>
         </nav>
     </div>
 
     <form id="user_search_form"
-          action="{{ url_for('user.user_list_filter') }}" method="get">
+          action="{{ url_for('admin.user_list_filter') }}" method="get">
         <div class="input-group  mb-3">
             <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
             <div class="col-sm-4">
@@ -67,11 +90,13 @@
         </div>
 
             <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
+            <button type="button"  value="Submit" class="btn btn-primary add_user">Add User</button>
 
     </form>
-    <p class="h4">User List</p>
 
-    <div id="result_table_div">
+
+    <div id="result_table_div" style="display:none">
+        <p class="h4">User List</p>
         {{ agents }}
 
     </div>

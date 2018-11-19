@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
+            $('.submit').on('click', function(e){
+                var form = $('#admin_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        if(data>0) {
+                            alert('update sucess.')
+                            window.location = url;
+                        }
+                    }
+                });
+                e.preventDefault();
+            });
+
+
+        });
+
+
+
+
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+            'use strict';
+
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('admin.user_list') }}">Users</a></li>
+                {% if user %}
+                <li class="breadcrumb-item active" aria-current="page">Edit User</li>
+                {% else %}
+                <li class="breadcrumb-item active" aria-current="page">Add User</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+
+    <div class="admin_from ">
+        <form id="admin_form" class="needs-validation" action="{{ url_for('admin.maintain_user') }}" method="POST" novalidate >
+            {% if user%}
+                <div class="input-group  mb-3">
+                <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control-plaintext"
+                           id="input_id"  value="{{ property['id'] }}">
+
+                </div>
+
+
+            </div>
+            {% endif %}
+            <input type="hidden" name="user_id" value="{{ user['id'] }}"/>
+
+            <div class="input-group  mb-3">
+                <label for="input_district" class="col-sm-2 col-form-label">District: </label>
+                <div class="col-sm-4">
+
+                    <select class="form-control" id="input_district" name="district">
+                        {% for item in districts %}
+                            <option value="{{ item.id }}">
+                                {{  item.name}}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                    <div class="invalid-feedback">
+                        District is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_estate" class="col-sm-2 col-form-label">Estate: </label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="input_estate" name="estate">
+                        {% for item in estates %}
+                            <option value="{{ item.id }}">
+                                {{  item.name}}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                    <div class="invalid-feedback">
+                        Estate is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_block" class="col-sm-2 col-form-label">Block: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_block" name="block" class="form-control"
+                           value="{{ property['block'] }}" required/>
+                    <div class="invalid-feedback">
+                        Block is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_floor" class="col-sm-2 col-form-label">Floor: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_floor" name="floor" class="form-control"
+                           value="{{ property['floor'] }}" required/>
+                    <div class="invalid-feedback">
+                        Floor is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_flat" class="col-sm-2 col-form-label">Floor: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_flat" name="flat" class="form-control"
+                           value="{{ property['flat'] }}" required/>
+                    <div class="invalid-feedback">
+                        Flat is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_area" class="col-sm-2 col-form-label">Gross area sqaure ft.: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_area" name="area" class="form-control"
+                           value="{{ property['area'] }}" required/>
+                    <div class="invalid-feedback">
+                        Area is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_bedrooms" class="col-sm-2 col-form-label">Bedrooms: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_bedrooms" name="bedrooms" class="form-control"
+                           value="{{ property['bedrooms'] }}" required/>
+                    <div class="invalid-feedback">
+                        Bedrooms is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_hascarpark" class="col-sm-2 col-form-label">Provide car park: </label>
+                <div class="col-sm-4">
+                    <input type="radio" id="input_hascarpark_y" name="hascarpark" class="form-control"
+                           value="Y" required/>Yes
+                    <input type="radio" id="input_hascarpark_n" name="hascarpark" class="form-control"
+                           value="N" required/>No
+                    <div class="invalid-feedback">
+                        Choice is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_selling_price" class="col-sm-2 col-form-label">Selling Price: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_selling_price" name="selling_price" class="form-control"
+                           value="{{ property['selling_price'] }}" required/>
+                    <div class="invalid-feedback">
+                        Selling Price is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_rental_price" class="col-sm-2 col-form-label">Rental Price: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_rental_price" name="rental_price" class="form-control"
+                           value="{{ property['rental_price'] }}" required/>
+                    <div class="invalid-feedback">
+                        Rental Price is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_type" class="col-sm-2 col-form-label">For Transaction: </label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="input_type" name="type">
+                        {% for item in trans_types %}
+                            <option >
+                                {{  item.transaction_type}}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_owner" class="col-sm-2 col-form-label">Owner: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_owner" name="owner" class="form-control"
+                           value="{{ property['owner'] }}" required/>
+                    <div class="invalid-feedback">
+                        Owner is required.
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
+        </form>
+
+    </div>
+
+
+{% endblock %}

@@ -48,7 +48,10 @@ def login():
                 agent = agent_result[0]
                 if agent is not None:
                     session['agent_id'] = agent['agent_id']
-            return redirect("/")
+            if user['usergroup'] == 'admin':
+                return redirect(url_for('admin.home'))
+            else:
+                return redirect("/")
 
         flash(error)
 
@@ -80,7 +83,7 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect("/")
+    return redirect(url_for('auth.login'))
 
 
 def login_required(view):

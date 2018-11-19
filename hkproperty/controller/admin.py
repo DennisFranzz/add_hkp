@@ -11,6 +11,10 @@ from flask_table import Table, Col, BoolCol, LinkCol, DateCol, DatetimeCol, Nest
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
+@bp.route('/', methods=['GET'])
+@admin_required
+def home():
+    return render_template('/base.html')
 
 @bp.route('/users', methods=['GET'])
 @admin_required
@@ -20,10 +24,40 @@ def user_list():
 
 @bp.route('/users/filter', methods=['GET'])
 @admin_required
-def user_list():
-    return render_template('/admin/userlist.html')
+def user_list_filter():
+    return find_user(request)
 
-def find_transaction(request):
+
+@bp.route('/properties', methods=['GET'])
+@admin_required
+def property_list():
+    trans_type_list = property.list_trans_type()
+    return render_template('admin/property_list.html', trans_types=trans_type_list)
+
+
+@bp.route('/properties/filter', methods=['GET'])
+@admin_required
+def property_list_filter():
+    if len(request.args) >0:
+        result_table = property.find_property(request, True)
+        return result_table.__html__()
+    else:
+        return
+
+
+@bp.route('/properties/maintain', methods=['GET', 'POST'])
+@admin_required
+def maintain_property():
+    return
+
+
+@bp.route('/properties/delete', methods=[ 'POST'])
+@admin_required
+def delete_property():
+    return
+
+
+def find_user(request):
     error = None
     dao = BaseDao()
     form_value = {}
@@ -54,8 +88,8 @@ def find_transaction(request):
     form_object = {'id':form_value['id'], 'username':form_value['username'],
         'usergroup':form_value['usergroup']}
     results = dao.excute_query(query_sql.QUERY_FIND_ALL_USER, form_object)
-    table = build_transaction_table(results)
-    return table
+    table = build_table(results)
+    return table.__html__()
 
 
 
@@ -68,7 +102,7 @@ def maintain_user():
         id = request.form['user_id']
         if id =='':
             last_id_result = dao.excute_query(query_sql.QUERY_FIND_LAST_USER_ID)
-            id = last_id_result['id'] +1
+            id = last_id_result[0]['id'] +1
 
         username = request.form['username']
         password = request.form['password']
@@ -99,11 +133,17 @@ def delete_user():
     return str(result.rowcount)
 
 
-class ItemTable(Table):
+class UserTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
     thead_classes = ['thead-dark']
-    id = Col('ID')
+    id = Col('ID',column_html_attrs={'class': 'col-id'})
     username = Col('Username')
     usergroup = Col('Usergroup')
     update = LinkCol('Update', 'admin.maintain_user', url_kwargs=dict(id='id'))
-    delete = LinkCol('Delete', '#', column_html_attrs={'class': 'delete'})
+    delete = LinkCol('Delete', 'admin.delete_user', column_html_attrs={'class': 'delete'})
+
+
+def build_table(result_dict):
+    table = UserTable(result_dict)
+    return table
+
