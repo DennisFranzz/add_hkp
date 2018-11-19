@@ -2,6 +2,28 @@
 
 {% block content %}
 
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
+
+            $("#pref_property_search_form .submit").on('click', function(e) {
+                var form = $('#pref_property_search_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $('#pref_property_table').html(data); // show response from the php script.
+                        $('#pref_property_table').parent().show();
+                    }
+                });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+    </script>
 
 
 
@@ -10,7 +32,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                 <li class="breadcrumb-item"><a href="#">Customer</a></li>
-				<li class="breadcrumb-item active" aria-current="page"><a href="#">Details</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Details</li>
             </ol>
         </nav>
     </div>
@@ -37,7 +59,8 @@
         </div>
     </form>
     <p class="h5">Preference</p>
-    <form>
+    <form id="pref_property_search_form"
+          action="{{ url_for('customer.customer_preference', id=customer.preference_id) }}" method="get">
         <div class="input-group row">
             <label for="pref_estate" class="col-sm-2 col-form-label">Estate</label>
             <div class="col-sm-10">
@@ -68,11 +91,31 @@
                 <input type="text" readonly class="form-control-plaintext" id="pref_transactiontype" value="{{ customer.transactiontype }}">
             </div>
         </div>
+
+        <div class="input-group  mb-3">
+
+            <div class="col-sm-2">
+                <select class="form-control" id="input_type" name="type">
+                    <option>sale</option>
+                    <option>rent</option>
+                </select>
+            </div>
+            <button type="button"  value="Submit" class="btn btn-primary submit">Find Properties</button>
+        </div>
+
+
+
+
     </form>
 
-    <div style="margin-top: 15px;">
+
+    <div style="margin-top: 15px;display:none">
 		<p class="h5">Properties meet Customer's Preference</p>
-        {{ property_table }}
+        <div id="pref_property_table">
+
+
+        </div>
+
 
     </div>
 

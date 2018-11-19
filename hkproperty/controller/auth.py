@@ -41,11 +41,13 @@ def login():
 
 
         if error is None:
-            agent = agent_result[0]
+
             session.clear()
             session['user_id'] = user['id']
-            if agent is not None:
-                session['agent_id'] = agent['agent_id']
+            if agent_result is not None and len(agent_result)>0:
+                agent = agent_result[0]
+                if agent is not None:
+                    session['agent_id'] = agent['agent_id']
             return redirect("/")
 
         flash(error)
@@ -98,7 +100,8 @@ def agent_required(view):
             return redirect(url_for('auth.login'))
         else:
             if g.agent is None:
-                return redirect(url_for('auth.login'))
+                return render_template('error.html', error_message='You are not an agent')
+
             else:
                 return view(**kwargs)
     return wrapped_view
@@ -109,8 +112,20 @@ def branch_manager_required(view):
         if g.user is None:
             return redirect(url_for('auth.login'))
         else:
-            if g.agent is None or g.agent['usergroup'] is not 'branchg_manager':
-                return redirect(url_for('auth.login'))
+            if  g.user['usergroup'] != 'branch_manager':
+                return render_template('error.html', error_message='You are not a branch manager')
+            else:
+                return view(**kwargs)
+    return wrapped_view
+
+def admin_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        else:
+            if g.user['usergroup'] != 'admin':
+                return render_template('error.html', error_message='You are not Admin')
             else:
                 return view(**kwargs)
     return wrapped_view

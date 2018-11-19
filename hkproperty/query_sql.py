@@ -3,21 +3,18 @@ QUERY_FIND_USER_BY_USERNAME = "Select * from hkpUser where username = :username;
 QUERY_FIND_USER_BY_ID = "Select * from hkpUser where id = :id;"
 
 QUERY_FIND_AGENT = (
-    'Select a.id as id, a.name as name, a.email as email, a.phone as phone, '
+    'Select a.id as id, a.agent_id as agent_id, a.name as name, a.email as email, a.phone as phone, '
     'a.branch_id as branch_id, b.address as address from agent as a join branch as b on (a.branch_id = b.id) '
 )
-QUERY_FIND_AGENT_BY_USERNAME = (
-    QUERY_FIND_AGENT
+QUERY_FIND_AGENT_BY_USERNAME = QUERY_FIND_AGENT + (
     'where a.username = :username;'
 )
 
-QUERY_FIND_AGENT_BY_ID = (
-    QUERY_FIND_AGENT
+QUERY_FIND_AGENT_BY_ID = QUERY_FIND_AGENT + (
     'where a.agent_id = :id;'
 )
 
-QUERY_FIND_AGENT_BY_BRANCH = (
-    QUERY_FIND_AGENT
+QUERY_FIND_AGENT_BY_BRANCH = QUERY_FIND_AGENT + (
     'where b.id = :branch_id;'
 )
 
@@ -51,7 +48,28 @@ QUERY_FIND_CUSTOMER_BY_ID = (
     'where c.id = :id '
 )
 
-QUERY_FIND_PROPERTY_BY_PREFERENCE = (
+QUERY_FIND_RENTAL_PROPERTY_BY_PREFERENCE = (
+    'select p.id as property_id, dist.name as district, '
+    'est.name as estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area, '
+    'p.number_of_bedrooms as bedrooms, p.provide_car_park as hascarpark, '
+    'p.selling_price,p.rental_price, p.for_transaction_type, '
+    'po.id as owner_id,po.name as owner '
+    'from preference as pref  '
+    'join property as p on (p.rental_price <= pref.rental_budget '
+    '    and (p.for_transaction_type = \'both\' or p.for_transaction_type= \'rent\') '
+    '    and (pref.transactionType = \'both\'   or pref.transactionType= \'rent\')) '
+    'join propertyAddress as pa on(p.address_id = pa.id'
+    '    and (pref.district_id is null or pa.district_id = pref.district_id)'
+    '    and (pref.estate_id is null or pa.estate_id = pref.estate_id )'
+    '    )    '
+    'join propertyOwner as po on (p.owner_id = po.id) '
+    'join district as dist on (pa.district_id = dist.id) '
+    'join estate as est on (pa.estate_id = est.id) '
+    'where pref.id = :prefId '
+    'order by property_id asc '
+)
+
+QUERY_FIND_SELLING_PROPERTY_BY_PREFERENCE = (
     'select p.id as property_id, dist.name as district, '
     'est.name as estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area, '
     'p.number_of_bedrooms as bedrooms, p.provide_car_park as hascarpark, '
@@ -71,6 +89,7 @@ QUERY_FIND_PROPERTY_BY_PREFERENCE = (
     'where pref.id = :prefId '
     'order by property_id asc '
 )
+
 
 QUERY_LIST_TRANSACTION_TYPE = 'SELECT unnest(enum_range(NULL::transactiontype)) as transaction_type'
 
@@ -100,6 +119,29 @@ QUERY_FIND_TRANSACTION_BY_BRANCH = (
     'and CAST(t.type AS TEXT) like :type '
 )
 
-QUERY_FIND_TRANSACTION = (
+QUERY_BRANCH_REPORT = (
+    'SELECT t.agent_id, a.name, count(ref_no) as total_count, '
+    'count(ref_no)  FILTER(where type = \'sale\' )as sale_count, '
+    'sum(sold_price) FILTER(where type = \'sale\') as total_sold_price, '
+    'sum(commission) FILTER(where type = \'sale\') as total_sale_comm, '
+    'count(ref_no) FILTER(where type = \'rent\') as rent_count, '
+    'sum(rental_price) FILTER(where type = \'rent\') as total_rent_price, '
+    'sum(commission) FILTER(where type = \'rent\') as total_rent_comm '
+    'FROM transaction as t join agent as a on(t.agent_id = a.agent_id) '
+    'where a.branch_id = :branch_id ' 
+    'group by t.agent_id, a.name order by t.agent_id;'
+)
 
+
+QUERY_BRANCH_REPORT_BRANCH_SUMMARY = (
+    'SELECT a.branch_id, count(ref_no) as total_count, '
+    'count(ref_no)  FILTER(where type = \'sale\' )as sale_count, '
+    'sum(sold_price) FILTER(where type = \'sale\') as total_sold_price, '
+    'sum(commission) FILTER(where type = \'sale\') as total_sale_comm, '
+    'count(ref_no) FILTER(where type = \'rent\') as rent_count, '
+    'sum(rental_price) FILTER(where type = \'rent\') as total_rent_price, '
+    'sum(commission) FILTER(where type = \'rent\') as total_rent_comm '
+    'FROM transaction as t join agent as a on(t.agent_id = a.agent_id) '
+    'where a.branch_id = :branch_id ' 
+    'group by a.branch_id, a.name'
 )

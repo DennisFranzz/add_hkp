@@ -23,3 +23,10 @@ class BaseDao:
         return result_list
 
 
+    def excute_upsert(self, sql, *params):
+        engine = db.get_db()
+        statement = text(sql)
+        result_proxy = engine.execute(statement, params)
+        return result_proxy
+
+

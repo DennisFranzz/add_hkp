@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
+            $('.submit').on('click', function(e){
+                var form = $('#admin_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        if(data>0) {
+                            alert('update sucess.')
+                            window.location = url;
+                        }
+                    }
+                });
+                e.preventDefault();
+            });
+
+
+        });
+
+
+
+
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+            'use strict';
+
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="#">User</a></li>
+                {% if user %}
+                <li class="breadcrumb-item active" aria-current="page">Edit User</li>
+                {% else %}
+                <li class="breadcrumb-item active" aria-current="page">Add User</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+
+    <div class="admin_from ">
+        <form id="admin_form" class="needs-validation" action="{{ url_for('admin.maintain_user') }}" method="POST" novalidate >
+            {% if user%}
+                <div class="input-group  mb-3">
+                <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control-plaintext" id="input_id"  value="{{ user['id'] }}">
+
+                </div>
+
+
+            </div>
+            {% endif %}
+            <input type="hidden" name="user_id" value="{{ user['id'] }}"/>
+
+            <div class="input-group  mb-3">
+                <label for="input_username" class="col-sm-2 col-form-label">Username: </label>
+                <div class="col-sm-4">
+                    <input type="text" id="input_username" name="username" class="form-control"
+                           value="{{ user['username'] }}" required/>
+                    <div class="invalid-feedback">
+                        Username is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_password" class="col-sm-2 col-form-label">Password: </label>
+                <div class="col-sm-4">
+                    <input type="password" id="input_password" name="password" class="form-control"
+                           value="{{ user['password'] }}" required/>
+                    <div class="invalid-feedback">
+                        Password is required.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="input-group  mb-3">
+                <label for="input_usergroup" class="col-sm-2 col-form-label">Usergroup: </label>
+                <div class="col-sm-4">
+                    <select id="input_usergroup" name="usergroup" class="form-control"
+                           required>
+                        <option></option>
+                        {% if user['usergroup'] == 'admin' %}
+                            <option selected>admin</option>
+                        {% else %}
+                            <option>admin</option>
+                        {% endif %}
+
+                        {% if user['usergroup'] == 'agent' %}
+                            <option selected>agent</option>
+                        {% else %}
+                            <option>agent</option>
+                        {% endif %}
+                        {% if user['usergroup'] == 'branch_manager' %}
+                            <option selected>branch_manager</option>
+                        {% else %}
+                            <option>branch_manager</option>
+                        {% endif %}
+                    </select>
+
+                    <div class="invalid-feedback">
+                        Usergroup is required.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
+        </form>
+
+    </div>
+
+
+{% endblock %}

@@ -33,16 +33,17 @@ def customer_details(id):
 
     if error is None:
         preference_id = customer['preference_id']
-        if preference_id is not None:
-            property_results = find_property_by_preference(preference_id)
-            property_table = property.build_table(property_results)
-            return render_template('customer/customer_details.html', property_table=property_table, customer=customer)
-        else:
-            return render_template('customer/customer_details.html', customer=customer)
+        return render_template('customer/customer_details.html', customer=customer)
     else:
         #todo error handle
         return error
 
+@bp.route('/customer/<int:id>/preference', methods=['GET'])
+def customer_preference(id):
+    type = request.args.get('type')
+    result = find_property_by_preference(id, type)
+    table = property.build_table(result)
+    return table.__html__()
 
 def find_customer(request):
     form_value = {}
@@ -88,10 +89,14 @@ def find_customer_by_id(customer_id):
     return customer_results
 
 
-def find_property_by_preference(pref_id):
+def find_property_by_preference(pref_id, type):
     dao = BaseDao()
     form_object = {'prefId': pref_id}
-    property_results = dao.excute_query(query_sql.QUERY_FIND_PROPERTY_BY_PREFERENCE, form_object)
+    if type == 'sale':
+        property_results = dao.excute_query(query_sql.QUERY_FIND_SELLING_PROPERTY_BY_PREFERENCE, form_object)
+    else:
+        property_results = dao.excute_query(query_sql.QUERY_FIND_RENTAL_PROPERTY_BY_PREFERENCE, form_object)
+
     return property_results
 
 

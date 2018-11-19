@@ -6,31 +6,7 @@
         // wait for the DOM to be loaded
         $(function() {
 
-            $.ajax({
-                type: "GET",
-                url: '{{ url_for('agent.transaction_list_filter') }}',
-                //data: form.serialize(), // serializes the form's elements.
-                success: function(data)
-                {
-                    $('#result_table_div').html(data) // show response from the php script.
-                }
-            });
 
-            $(".submit").on('click', function(e) {
-                var form = $('#property_search_form');
-                var url = form.attr('action');
-
-                $.ajax({
-                    type: "GET",
-                    url: url,
-                    data: form.serialize(), // serializes the form's elements.
-                    success: function(data)
-                    {
-                        $('#result_table_div').html(data) // show response from the php script.
-                    }
-                });
-                e.preventDefault(); // avoid to execute the actual submit of the form.
-            });
         });
     </script>
 
@@ -46,7 +22,7 @@
         </nav>
     </div>
 
-    <form>
+    <form action="{{ url_for('agent.branch_report') }}" method="POST">
         <div class="input-group row">
             <label for="info_branch_id" class="col-sm-2 col-form-label">Branch ID</label>
             <div class="col-sm-10">
@@ -59,12 +35,21 @@
                 <input type="text" readonly class="form-control-plaintext" id="info_branch_address" value="{{ g.agent['address'] }}">
             </div>
         </div>
+
+        {%   if g.user['usergroup'] == 'branch_manager' %}
+        <div class="input-group row">
+
+            <div class="col-sm-10">
+                <button type="submit"  value="Submit" class="btn btn-primary submit">Get Trans. Report</button>
+            </div>
+        </div>
+        {%  endif %}
     </form>
 
-    <p class="h4">Transactions</p>
+    <p class="h4">Agent List</p>
 
     <div id="result_table_div">
-
+        {{ agents }}
 
     </div>
 

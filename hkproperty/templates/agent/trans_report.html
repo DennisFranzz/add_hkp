@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <script>
+        // wait for the DOM to be loaded
+        $(function() {
+
+
+            $(".submit").on('click', function(e) {
+                var form = $('#property_search_form');
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $('#result_table_div').html(data) // show response from the php script.
+                    }
+                });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+    </script>
+
+
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="#">My Branch</a></li>
+
+            </ol>
+        </nav>
+    </div>
+    <p class="h4">Transaction Report</p>
+    <form>
+        <div class="input-group row">
+            <label for="info_branch_id" class="col-sm-4 col-form-label">Branch ID</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_id" value="{{ g.agent['branch_id'] }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_branch_address" class="col-sm-4 col-form-label">Branch Address</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_address" value="{{ g.agent['address'] }}">
+            </div>
+        </div>
+        <div class="input-group row">
+            <label for="info_branch_manager" class="col-sm-4 col-form-label">Branch Manager</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_manager" value="{{ g.agent['name'] }}">
+            </div>
+        </div>
+
+        <div class="input-group row">
+            <label for="info_branch_address" class="col-sm-4 col-form-label">Total Transaction Count</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_address" value="{{ summary[0]['total_count'] }}">
+            </div>
+        </div>
+
+        <div class="input-group row">
+            <label for="info_branch_address" class="col-sm-4 col-form-label">Total Sold Price</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_address" value="{{ summary[0]['total_sold_price'] }}">
+            </div>
+        </div>
+
+        <div class="input-group row">
+            <label for="info_branch_address" class="col-sm-4 col-form-label">Total Rental Price</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="info_branch_address" value="{{ summary[0]['total_rent_price'] }}">
+            </div>
+        </div>
+
+
+
+
+    </form>
+
+
+
+    <div id="result_table_div">
+        {{ report }}
+
+    </div>
+
+{% endblock %}

@@ -84,6 +84,9 @@ INSERT INTO transaction( property_id, customer_id, agent_id, type, transaction_d
 (3, 2, 2, 'sale', current_timestamp, null, 5000000, 100000),
 (4, 2, 3, 'sale', current_timestamp, null, 4500000, 90000),
 (5, 1, 3, 'sale', current_timestamp, null, 12000000, 240000),
-(7, 5, 3, 'sale', current_timestamp, null, 10000000, 200000);
+(7, 5, 3, 'sale', current_timestamp, null, 10000000, 200000),
+(6, 3, 1, 'rent', current_timestamp, 360000, null, 30000),
+(2, 3, 1, 'sale', current_timestamp, null, 3000000, 60000),
+(1, 2, 1, 'sale', current_timestamp, null, 7500000, 150000),
 
 END;
