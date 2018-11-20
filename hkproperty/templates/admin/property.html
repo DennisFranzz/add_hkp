@@ -237,8 +237,14 @@
             <div class="input-group  mb-3">
                 <label for="input_owner" class="col-sm-2 col-form-label">Owner: </label>
                 <div class="col-sm-4">
-                    <input type="text" id="input_owner" name="owner" class="form-control"
-                           value="{{ property['owner'] }}" required/>
+                    <select class="form-control" id="input_owner" name="owner">
+                        {% for item in estates %}
+                            <option value="{{ item.id }}">
+                                {{item.id}} - {{  item.name}}
+                            </option>
+                        {% endfor %}
+
+                    </select>
                     <div class="invalid-feedback">
                         Owner is required.
                     </div>
