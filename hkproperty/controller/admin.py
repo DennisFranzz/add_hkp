@@ -48,13 +48,67 @@ def property_list_filter():
 @bp.route('/properties/maintain', methods=['GET', 'POST'])
 @admin_required
 def maintain_property():
-    return
+    dao = BaseDao()
+    error = None
+
+    trans_types = property.list_property_ownerstrans_type()
+    property_owners = property.list_property_owners()
+    districts = find_district()
+    estate = find_estate()
+    if request.method == 'POST':
+        id = request.form['user_id']
+        if id =='':
+            last_id_result = dao.excute_query(query_sql.QUERY_FIND_LAST_PROPERTY)
+            id = last_id_result[0]['id'] +1
+
+        district = request.form['district']
+        estate = request.form['estate']
+        block = request.form['block']
+        floor = request.form['floor']
+        flat = request.form['flat']
+        area = request.form['area']
+        bedrooms = request.form['bedrooms']
+        hascarpark = request.form['hascarpark']
+        selling_price = request.form['selling_price']
+        rental_price = request.form['rental_price']
+        trans_type = request.form['type']
+        owner = request.form['owner']
+        params = {'id':id,
+                  'district':district,
+                  'estate':estate,
+                  'block':block,
+                  'floor':floor,
+                  'flat':flat,
+                  'area':area,
+                  'bedrooms':bedrooms,
+                  'hascarpark':hascarpark,
+                  'selling_price':selling_price,
+                  'rental_price':rental_price,
+                  'trans_type':trans_type,
+                  'owner':owner}
+        result = dao.excute_upsert(insert_update_sql.UPSERT_USER, params)
+        return str(result.rowcount)
+    else:
+        property_id = request.args.get('id')
+        property = None
+        if property_id is not None:
+            property = dao.excute_query(
+                query_sql.QUERY_FIND_PROPERTY_BY_ID, {'id': property_id}
+            )[0]
+        return render_template('admin/property.html', property=property,
+            trans_types = trans_types, districts = districts, estates = estates,
+            property_owners = property_owners)
 
 
 @bp.route('/properties/delete', methods=[ 'POST'])
 @admin_required
 def delete_property():
-    return
+    dao = BaseDao()
+    id = request.form['id']
+    params = {'id':id}
+    result = dao.excute_upsert(insert_update_sql.DELETE_PROPERTY, params)
+    return str(result.rowcount)
+
 
 
 def find_user(request):
@@ -133,6 +187,17 @@ def delete_user():
     return str(result.rowcount)
 
 
+def find_district():
+    dao = BaseDao()
+    results = dao.excute_query(query_sql.QUERY_FIND_DISTRICT)
+    return results
+
+
+def find_estate():
+    dao = BaseDao()
+    results = dao.excute_query(query_sql.QUERY_FIND_ESTATE)
+    return results
+
 class UserTable(Table):
     classes = ['table', 'table-striped', 'table-bordered', 'table-hover', 'table-sm']
     thead_classes = ['thead-dark']
@@ -146,4 +211,3 @@ class UserTable(Table):
 def build_table(result_dict):
     table = UserTable(result_dict)
     return table
-

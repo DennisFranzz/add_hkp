@@ -42,6 +42,18 @@ QUERY_FIND_PROPERTY = (
     'order by p.id asc'
 )
 
+QUERY_FIND_PROPERTY_BY_ID = (
+    'select p.id as property_id, dist.name as District, est.name as Estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area,'
+    'p.number_of_bedrooms as bedrooms, p.provide_car_park as hasCarPark, p.selling_price, p.rental_price, '
+    'p.for_transaction_type, owner.name as Owner '
+    'from property as p  join propertyAddress as pa on (p.address_id = pa.id) '
+    'join estate as est on (pa.estate_id = est.id) '
+    'join district as dist on (pa.district_id = dist.id) '
+    'join propertyOwner as owner on(p.owner_id = owner.id) '
+    'where p.id = :id'
+    'order by p.id asc'
+)
+
 QUERY_FIND_CUSTOMER_BY_ID = (
     'select c.name as name, c.title, c.id, c.preference_id, c.phone, '
     'pref.transactionType, pref.buying_budget, pref.rental_budget, '
@@ -51,6 +63,7 @@ QUERY_FIND_CUSTOMER_BY_ID = (
     'left join estate as est on (pref.estate_id = est.id) '
     'where c.id = :id '
 )
+QUERY_FIND_LAST_PROPERTY = "Select id from property order by id desc limit 1;"
 
 QUERY_FIND_RENTAL_PROPERTY_BY_PREFERENCE = (
     'select p.id as property_id, dist.name as district, '
@@ -149,3 +162,21 @@ QUERY_BRANCH_REPORT_BRANCH_SUMMARY = (
     'where a.branch_id = :branch_id '
     'group by a.branch_id, a.name'
 )
+
+QUERY_FIND_PROPERTY_OWNER = (
+    'SELECT po.id, po.name, po.title, po.phone '
+    'FROM propertyOwner as po '
+    'order by po.id'
+)
+
+QUERY_FIND_DISTRICT = {
+    'SELECT id, name'
+    'FROM district '
+    'order by id'
+}
+
+QUERY_FIND_ESTATE = {
+    'SELECT id, name'
+    'FROM estate '
+    'order by id'
+}

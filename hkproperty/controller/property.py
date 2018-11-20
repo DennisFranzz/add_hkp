@@ -76,6 +76,12 @@ def list_trans_type():
     return results
 
 
+def find_property_owner():
+    dao = BaseDao()
+    results = dao.excute_query(query_sql.QUERY_FIND_PROPERTY_OWNER)
+    return results
+
+
 def build_table(result_dict):
     table = PropertyTable(result_dict)
     return table

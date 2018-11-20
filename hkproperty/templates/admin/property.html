@@ -70,8 +70,8 @@
     </div>
 
     <div class="admin_from ">
-        <form id="admin_form" class="needs-validation" action="{{ url_for('admin.maintain_user') }}" method="POST" novalidate >
-            {% if user%}
+        <form id="admin_form" class="needs-validation" action="{{ url_for('admin.maintain_property') }}" method="POST" novalidate >
+            {% if property%}
                 <div class="input-group  mb-3">
                 <label for="input_id" class="col-sm-2 col-form-label">ID: </label>
                 <div class="col-sm-4">
@@ -83,7 +83,7 @@
 
             </div>
             {% endif %}
-            <input type="hidden" name="user_id" value="{{ user['id'] }}"/>
+            <input type="hidden" name="property_id" value="{{ property['id'] }}"/>
 
             <div class="input-group  mb-3">
                 <label for="input_district" class="col-sm-2 col-form-label">District: </label>
@@ -147,7 +147,7 @@
             </div>
 
             <div class="input-group  mb-3">
-                <label for="input_flat" class="col-sm-2 col-form-label">Floor: </label>
+                <label for="input_flat" class="col-sm-2 col-form-label">Flat: </label>
                 <div class="col-sm-4">
                     <input type="text" id="input_flat" name="flat" class="form-control"
                            value="{{ property['flat'] }}" required/>
