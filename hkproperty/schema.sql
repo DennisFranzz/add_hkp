@@ -26,7 +26,7 @@ CREATE TABLE branch(
 );
 ALTER TABLE branch ADD CONSTRAINT branch_manager_id_fk FOREIGN KEY (manager_id)
 		REFERENCES agent (agent_id) DEFERRABLE INITIALLY DEFERRED;
-        
+
 ALTER TABLE agent ADD CONSTRAINT agent_branch_id_fk FOREIGN KEY (branch_id)
 		REFERENCES branch (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
@@ -56,18 +56,18 @@ CREATE TABLE preference(
 CREATE TABLE customer(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
-	title title NOT NULL,
+	title VARCHAR(10) NOT NULL,
 	phone VARCHAR(30) NOT NULL,
 	preference_id INTEGER,
 	CONSTRAINT customer_preference_id_fk FOREIGN KEY (preference_id)
-		REFERENCES preference(id) 
+		REFERENCES preference(id)
 		ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE propertyOwner(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
-	title title NOT NULL,
+	title VARCHAR(10) NOT NULL,
 	phone VARCHAR(30) NOT NULL
 );
 CREATE TABLE propertyAddress(
@@ -116,5 +116,5 @@ CREATE TABLE transaction(
 	CONSTRAINT transaction_customer_id FOREIGN KEY (customer_id)
 		REFERENCES customer(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT transaction_agent_id FOREIGN KEY (agent_id)
-		REFERENCES agent(agent_id) ON UPDATE NO ACTION ON DELETE NO ACTION	
+		REFERENCES agent(agent_id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
