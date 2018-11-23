@@ -44,8 +44,8 @@ CREATE TABLE preference(
 	id SERIAL PRIMARY KEY,
 	district_id INTEGER,
 	estate_id INTEGER,
-	buying_budget INTEGER,
-	rental_budget INTEGER,
+	buying_budget NUMERIC (15,2),
+	rental_budget NUMERIC (15,2),
 	transactionType transactionType,
 	CONSTRAINT preference_district_id_fk FOREIGN KEY (district_id)
 		REFERENCES district(id) ON UPDATE NO ACTION ON DELETE NO ACTION,
