@@ -30,7 +30,7 @@
     <div class="">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('agent.agent_home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="#">Customer</a></li>
 				<li class="breadcrumb-item active" aria-current="page">Details</li>
             </ol>
@@ -58,6 +58,7 @@
             </div>
         </div>
     </form>
+    <div class="preference bg-light">
     <p class="h5">Preference</p>
     <form id="pref_property_search_form"
           action="{{ url_for('customer.customer_preference', id=customer.preference_id) }}" method="get">
@@ -92,25 +93,26 @@
             </div>
         </div>
 
-        <div class="input-group  mb-3">
-
+        <div class="input-group row">
+            <label for="input_type" class="col-sm-2 col-form-label">Find Properties For:</label>
             <div class="col-sm-2">
                 <select class="form-control" id="input_type" name="type">
                     <option>sale</option>
                     <option>rent</option>
                 </select>
             </div>
-            <button type="button"  value="Submit" class="btn btn-primary submit">Find Properties</button>
+            <button type="button"  value="Submit" class="btn btn-primary submit">Submit</button>
         </div>
 
 
 
 
     </form>
+    </div>
 
 
     <div style="margin-top: 15px;display:none">
-		<p class="h5">Properties meet Customer's Preference</p>
+		<p class="h5">Properties matched Customer's Preference</p>
         <div id="pref_property_table">
 
 

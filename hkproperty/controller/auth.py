@@ -17,18 +17,19 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     print('[Controller] login')
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        error = None
+
         dao = BaseDao()
         user_results = dao.excute_query(query_sql.QUERY_FIND_USER_BY_USERNAME, {'username': username})
         agent_result = dao.excute_query(query_sql.QUERY_FIND_AGENT_BY_USERNAME, {'username': username})
         user = None
         agent = None
-        if user_results is None:
-            error = 'Incorrect username.'
+        if user_results is None or len(user_results) == 0:
+            error = 'Incorrect username or password.'
         else:
             user = user_results[0]
             result_password = user['password']
@@ -37,7 +38,7 @@ def login():
                 if check_password_hash(result_password, password):
                     pass
                 else:
-                    error = 'Incorrect password.'
+                    error = 'Incorrect username or password.'
 
 
         if error is None:
@@ -55,7 +56,7 @@ def login():
 
         flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', error=error)
 
 
 @bp.before_app_request

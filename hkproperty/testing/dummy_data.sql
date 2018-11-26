@@ -4,8 +4,8 @@ INSERT INTO hkpUser(username,password,usergroup) values
 ('admin', 'admin', 'admin');
 
 INSERT INTO branch(manager_id,address) values
-(4,'branch address1'),
-(5,'branch address2');
+(4,'Unit 1213, Wing On Plaza, 62 Mody Rd, Tsim Sha Tsui East'),
+(5,'China Resources Building, 26 Harbour Rd, Wan Chai');
 
 INSERT INTO agent(name, username,password,email,phone,usergroup,branch_id) values
 ('Dennis Chan', 'dennischan', 'dennis', 'dennis@hkp.com','50100123', 'agent', 1),
@@ -20,7 +20,8 @@ INSERT INTO district(name) values
 ('Aberdeen'),
 ('Sha Tin'),
 ('Wong Tai Sin'),
-('Kwai Tsing');
+('Kwai Tsing'),
+('Tai Koo');
 
 INSERT INTO estate(name) values
 ('Kwai Chung Estate'),
@@ -28,7 +29,8 @@ INSERT INTO estate(name) values
 ('Yue Kwong Estate'),
 ('Fuk Loi Estate'),
 ('Shek Wai Kok Estate'),
-('Kwai Tsing Estate');
+('Kwai Tsing Estate'),
+('Kornhill Garden');
 
 INSERT INTO preference(district_id, estate_id, buying_budget, rental_budget, transactionType) values
 (1, null, 15000000, null, 'sale'),
@@ -47,18 +49,6 @@ INSERT INTO customer(name, title, phone, preference_id) values
 
 
 
-
-INSERT INTO propertyAddress(district_id, estate_id, block, floor, flat) values
-(4, 2, 'M', 12, 'A'),
-(2, 3, 'A', 2, 'O'),
-(1, 3, '1', 5, '1'),
-(1, 5, '2', 4, '2'),
-(5, 6, 'A', 5, '3'),
-(4, 2, '3', 1, '4'),
-(5, 1, 'F', 4, '5'),
-(5, 6, '5', 37, '6')
-;
-
 INSERT INTO propertyOwner(name, title, phone) values
 ('Tom Chan','Mr.','29199299'),
 ('Kelly Leung','Ms.','35353443'),
@@ -66,16 +56,18 @@ INSERT INTO propertyOwner(name, title, phone) values
 ('Amy Wong','Mrs.','66576834'),
 ('Kelvin Kwan','Mr.','65862345');
 
-INSERT INTO property(owner_id, address_id, gross_floor_area, number_of_bedrooms, provide_car_park,
+INSERT INTO property(owner_id, district_id, estate_id, block, floor, flat, gross_floor_area, number_of_bedrooms, provide_car_park,
     selling_price, rental_price, for_transaction_type) values
-(2, 1, 400, 1, true, 4000000, null, 'sale'),
-(2, 2, 450, 1, false, null, 10000, 'rent'),
-(1, 3, 300, 1, false, 2000000, 8000, 'both'),
-(4, 4, 1200, 3, true, 14000000, null, 'sale'),
-(3, 5, 1400, 4, false, 20000000, 20000, 'both'),
-(5, 6, 850, 2, true, null, 15000, 'rent'),
-(5, 7, 750, 2, true, 7500000, null, 'sale'),
-(1, 8, 500, 2, true, 5000000, null, 'sale')
+(2, 4, 2, 'M', 12, 'A',  400, 1, true, 4000000, null, 'sale'),
+(2, 2, 3, 'A', 2, 'O',  450, 1, false, null, 10000, 'rent'),
+(1, 1, 3, '1', 5, '1',  300, 1, false, 2000000, 8000, 'both'),
+(4, 1, 5, '2', 4, '2',  1200, 3, true, 14000000, null, 'sale'),
+(3, 5, 6, 'A', 5, '3',  1400, 4, false, 20000000, 20000, 'both'),
+(5, 4, 2, '3', 1, '4',  850, 2, true, null, 15000, 'rent'),
+(5, 5, 1, 'F', 4, '5',  750, 2, true, 7500000, null, 'sale'),
+(1, 5, 6, '5', 37, '6',  500, 2, true, 5000000, null, 'sale'),
+(3, 6, 6, '5', 37, '6',  1000, 2, false, 12000000, null, 'sale'),
+(3, 6, 7, '5', 37, '6',  850, 2, false, null, 18000, 'rent'),
 ;
 
 INSERT INTO transaction( property_id, customer_id, agent_id, type, transaction_date, rental_price, sold_price, commission) values 
@@ -87,6 +79,6 @@ INSERT INTO transaction( property_id, customer_id, agent_id, type, transaction_d
 (7, 5, 3, 'sale', current_timestamp, null, 10000000, 200000),
 (6, 3, 1, 'rent', current_timestamp, 360000, null, 30000),
 (2, 3, 1, 'sale', current_timestamp, null, 3000000, 60000),
-(1, 2, 1, 'sale', current_timestamp, null, 7500000, 150000),
-
+(1, 2, 1, 'sale', current_timestamp, null, 7500000, 150000)
+;
 END;

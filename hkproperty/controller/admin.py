@@ -51,12 +51,12 @@ def maintain_property():
     dao = BaseDao()
     error = None
 
-    trans_types = property.list_property_ownerstrans_type()
-    property_owners = property.list_property_owners()
-    districts = find_district()
-    estate = find_estate()
+    trans_types = property.list_trans_type()
+    property_owners = property.find_property_owner()
+    district_list = find_district()
+    estate_list = find_estate()
     if request.method == 'POST':
-        id = request.form['user_id']
+        id = request.form['property_id']
         if id =='':
             last_id_result = dao.excute_query(query_sql.QUERY_FIND_LAST_PROPERTY)
             id = last_id_result[0]['id'] +1
@@ -73,31 +73,36 @@ def maintain_property():
         rental_price = request.form['rental_price']
         trans_type = request.form['type']
         owner = request.form['owner']
+
+        if selling_price is None or selling_price == '':
+            selling_price = 0
+        if rental_price is None or rental_price == '':
+            rental_price = 0
         params = {'id':id,
-                  'district':district,
-                  'estate':estate,
+                  'district_id':district,
+                  'estate_id':estate,
                   'block':block,
                   'floor':floor,
                   'flat':flat,
-                  'area':area,
-                  'bedrooms':bedrooms,
-                  'hascarpark':hascarpark,
+                  'gross_floor_area':area,
+                  'number_of_bedrooms':bedrooms,
+                  'provide_car_park':hascarpark,
                   'selling_price':selling_price,
                   'rental_price':rental_price,
                   'trans_type':trans_type,
-                  'owner':owner}
-        result = dao.excute_upsert(insert_update_sql.UPSERT_USER, params)
+                  'owner_id':owner}
+        result = dao.excute_upsert(insert_update_sql.UPSERT_PROPERTY, params)
         return str(result.rowcount)
     else:
         property_id = request.args.get('id')
-        property = None
+        property_result = None
         if property_id is not None:
-            property = dao.excute_query(
+            property_result = dao.excute_query(
                 query_sql.QUERY_FIND_PROPERTY_BY_ID, {'id': property_id}
             )[0]
-        return render_template('admin/property.html', property=property,
-            trans_types = trans_types, districts = districts, estates = estates,
-            property_owners = property_owners)
+        return render_template('admin/property.html', property=property_result,
+                               trans_types=trans_types, districts=district_list, estates=estate_list,
+                               property_owners=property_owners)
 
 
 @bp.route('/properties/delete', methods=[ 'POST'])
@@ -105,7 +110,7 @@ def maintain_property():
 def delete_property():
     dao = BaseDao()
     id = request.form['id']
-    params = {'id':id}
+    params = {'id': id}
     result = dao.excute_upsert(insert_update_sql.DELETE_PROPERTY, params)
     return str(result.rowcount)
 
@@ -154,18 +159,24 @@ def maintain_user():
     error = None
     if request.method == 'POST':
         id = request.form['user_id']
-        if id =='':
-            last_id_result = dao.excute_query(query_sql.QUERY_FIND_LAST_USER_ID)
-            id = last_id_result[0]['id'] +1
-
         username = request.form['username']
         password = request.form['password']
         usergroup = request.form['usergroup']
+        isUpdate = False
+        sql = None
+        if id =='':
+            last_id_result = dao.excute_query(query_sql.QUERY_FIND_LAST_USER_ID)
+            id = last_id_result[0]['id'] +1
+            sql = insert_update_sql.UPSERT_USER
+        else:
+            isUpdate = True
+            sql = insert_update_sql.UPDATE_USER
         params = {'id':id,
                   'username':username,
                   'password':password,
                   'usergroup':usergroup}
-        result = dao.excute_upsert(insert_update_sql.UPSERT_USER, params)
+
+        result = dao.excute_upsert(sql, params)
         return str(result.rowcount)
     else:
         user_id = request.args.get('id')
@@ -175,6 +186,7 @@ def maintain_user():
                 query_sql.QUERY_FIND_USER_BY_ID, {'id': user_id}
             )[0]
         return render_template('admin/user.html', user=user)
+
 
 
 @bp.route('/users/delete', methods=[ 'POST'])

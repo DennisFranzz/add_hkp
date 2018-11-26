@@ -22,19 +22,16 @@ QUERY_FIND_AGENT_BY_BRANCH = QUERY_FIND_AGENT + (
     'where b.id = :branch_id;'
 )
 
-QUERY_FIND_PROPERTY_BY_TRANS_TYPE = "Select p.id, p.owner_id, p.address_id, p.gross_floor_area,"
-"p.number_of_bedrooms, p.provide_car_park, p.selling_price, p.rental_price,"
-"p.for_transaction_type, pa.district, pa.estate, pa.block, pa.floor, pa.flat"
-"from property as p INNER JOIN propertyAddress as pa on p.address_id = pa.id"
-"where p.for_transaction_type = :transType;"
+QUERY_FIND_PROPERTY_BY_TRANS_TYPE = ""
 
 QUERY_FIND_PROPERTY = (
-    'select p.id as property_id, dist.name as District, est.name as Estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area,'
+    'select p.id as property_id, dist.name as District, dist.id as district_id, '
+    'est.name as Estate, est.id as estate_id, p.block, p.floor, p.flat, p.gross_floor_area as area,'
     'p.number_of_bedrooms as bedrooms, p.provide_car_park as hasCarPark, p.selling_price, p.rental_price, '
-    'p.for_transaction_type, owner.name as Owner '
-    'from property as p  join propertyAddress as pa on (p.address_id = pa.id) '
-    'join estate as est on (pa.estate_id = est.id) '
-    'join district as dist on (pa.district_id = dist.id) '
+    'p.for_transaction_type, owner.name as Owner, p.owner_id '
+    'from property as p  '
+    'join estate as est on (p.estate_id = est.id) '
+    'join district as dist on (p.district_id = dist.id) '
     'join propertyOwner as owner on(p.owner_id = owner.id) '
     'where LOWER(est.name) like LOWER(:estate) and p.for_transaction_type = :type  '
     'and LOWER(dist.name) like LOWER(:district) '
@@ -43,14 +40,15 @@ QUERY_FIND_PROPERTY = (
 )
 
 QUERY_FIND_PROPERTY_BY_ID = (
-    'select p.id as property_id, dist.name as District, est.name as Estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area,'
+    'select p.id as property_id, dist.name as District, dist.id as district_id, '
+    'est.name as Estate, est.id as estate_id, p.block, p.floor, p.flat, p.gross_floor_area as area,'
     'p.number_of_bedrooms as bedrooms, p.provide_car_park as hasCarPark, p.selling_price, p.rental_price, '
-    'p.for_transaction_type, owner.name as Owner '
-    'from property as p  join propertyAddress as pa on (p.address_id = pa.id) '
-    'join estate as est on (pa.estate_id = est.id) '
-    'join district as dist on (pa.district_id = dist.id) '
+    'p.for_transaction_type, owner.name as Owner, p.owner_id '
+    'from property as p  '
+    'join estate as est on (p.estate_id = est.id) '
+    'join district as dist on (p.district_id = dist.id) '
     'join propertyOwner as owner on(p.owner_id = owner.id) '
-    'where p.id = :id'
+    'where p.id = :id '
     'order by p.id asc'
 )
 
@@ -67,42 +65,40 @@ QUERY_FIND_LAST_PROPERTY = "Select id from property order by id desc limit 1;"
 
 QUERY_FIND_RENTAL_PROPERTY_BY_PREFERENCE = (
     'select p.id as property_id, dist.name as district, '
-    'est.name as estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area, '
+    'est.name as estate, p.block, p.floor, p.flat, p.gross_floor_area as area, '
     'p.number_of_bedrooms as bedrooms, p.provide_car_park as hascarpark, '
     'p.selling_price,p.rental_price, p.for_transaction_type, '
     'po.id as owner_id,po.name as owner '
     'from preference as pref  '
     'join property as p on (p.rental_price <= pref.rental_budget '
     '    and (p.for_transaction_type = \'both\' or p.for_transaction_type= \'rent\') '
-    '    and (pref.transactionType = \'both\'   or pref.transactionType= \'rent\')) '
-    'join propertyAddress as pa on(p.address_id = pa.id'
-    '    and (pref.district_id is null or pa.district_id = pref.district_id)'
-    '    and (pref.estate_id is null or pa.estate_id = pref.estate_id )'
+    '    and (pref.transactionType = \'both\'   or pref.transactionType= \'rent\') '
+    '    and (pref.district_id is null or p.district_id = pref.district_id)'
+    '    and (pref.estate_id is null or p.estate_id = pref.estate_id )'
     '    )    '
     'join propertyOwner as po on (p.owner_id = po.id) '
-    'join district as dist on (pa.district_id = dist.id) '
-    'join estate as est on (pa.estate_id = est.id) '
+    'join district as dist on (p.district_id = dist.id) '
+    'join estate as est on (p.estate_id = est.id) '
     'where pref.id = :prefId '
     'order by property_id asc '
 )
 
 QUERY_FIND_SELLING_PROPERTY_BY_PREFERENCE = (
     'select p.id as property_id, dist.name as district, '
-    'est.name as estate, pa.block, pa.floor, pa.flat, p.gross_floor_area as area, '
+    'est.name as estate, p.block, p.floor, p.flat, p.gross_floor_area as area, '
     'p.number_of_bedrooms as bedrooms, p.provide_car_park as hascarpark, '
     'p.selling_price,p.rental_price, p.for_transaction_type, '
     'po.id as owner_id,po.name as owner '
     'from preference as pref  '
     'join property as p on (p.selling_price <= pref.buying_budget '
     '    and (p.for_transaction_type = \'both\' or p.for_transaction_type= \'sale\') '
-    '    and (pref.transactionType = \'both\'   or pref.transactionType= \'sale\')) '
-    'join propertyAddress as pa on(p.address_id = pa.id'
-    '    and (pref.district_id is null or pa.district_id = pref.district_id)'
-    '    and (pref.estate_id is null or pa.estate_id = pref.estate_id )'
+    '    and (pref.transactionType = \'both\'   or pref.transactionType= \'sale\') '
+    '    and (pref.district_id is null or p.district_id = pref.district_id)'
+    '    and (pref.estate_id is null or p.estate_id = pref.estate_id )'
     '    )    '
     'join propertyOwner as po on (p.owner_id = po.id) '
-    'join district as dist on (pa.district_id = dist.id) '
-    'join estate as est on (pa.estate_id = est.id) '
+    'join district as dist on (p.district_id = dist.id) '
+    'join estate as est on (p.estate_id = est.id) '
     'where pref.id = :prefId '
     'order by property_id asc '
 )
@@ -169,14 +165,14 @@ QUERY_FIND_PROPERTY_OWNER = (
     'order by po.id'
 )
 
-QUERY_FIND_DISTRICT = {
-    'SELECT id, name'
+QUERY_FIND_DISTRICT = (
+    'SELECT id, name '
     'FROM district '
     'order by id'
-}
+)
 
-QUERY_FIND_ESTATE = {
-    'SELECT id, name'
+QUERY_FIND_ESTATE = (
+    'SELECT id, name '
     'FROM estate '
     'order by id'
-}
+)

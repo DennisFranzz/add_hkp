@@ -9,7 +9,6 @@ from flask_table import Table, Col, BoolCol, LinkCol
 bp = Blueprint('property', __name__)
 
 
-
 @bp.route('/property', methods=['GET'])
 def property_list():
     trans_type_list = list_trans_type()

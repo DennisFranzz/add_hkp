@@ -6,6 +6,12 @@ UPSERT_USER = (
 	'usergroup = :usergroup;'
 )
 
+UPDATE_USER = (
+	'UPDATE hkpUser set (id, username,password,usergroup) = '
+	'(:id, :username, :password, :usergroup) '
+	'where id = :id;'
+)
+
 UPSERT_BRANCH = (
 	'INSERT INTO branch(id, manager_id,address) values '
 	'(:id, :manager_id, :address) '
@@ -50,13 +56,7 @@ UPSERT_CUSTOMER = (
 	'SET name = :name, title = :title, phone = :phone, preference_id = :preference_id;'
 )
 
-UPSERT_PROPERTY_ADDRESS = (
-	'INSERT INTO propertyAddress(id, district_id, estate_id, block, floor, flat) values '
-	'(:id, :district_id, :estate_id, :block, :floor, :flat) '
-	'ON CONFLICT (id) DO UPDATE '
-	'SET district_id = :district_id, estate_id = :estate_id, block = :block, '
-	'floor = :floor, flat = :flat;'
-)
+
 
 UPSERT_PROPERTY_OWNER = (
 	'INSERT INTO propertyOwner(id, name, title, phone) values '
@@ -66,13 +66,14 @@ UPSERT_PROPERTY_OWNER = (
 )
 
 UPSERT_PROPERTY = (
-	'INSERT INTO property(id, owner_id, address_id, gross_floor_area, '
+	'INSERT INTO property(id, owner_id, district_id, estate_id, block, floor, flat, gross_floor_area, '
 	'number_of_bedrooms, provide_car_park, selling_price, rental_price, '
 	'for_transaction_type) values '
-	'(:id, :owner_id, :address_id, :gross_floor_area, :number_of_bedrooms,'
+	'(:id, :owner_id, :district_id, :estate_id, :block, :floor, :flat, :gross_floor_area, :number_of_bedrooms,'
 	':provide_car_park, :selling_price, :rental_price, :trans_type) '
 	'ON CONFLICT (id) DO UPDATE '
-	'SET owner_id = :owner_id, address_id = :address_id, gross_floor_area = :gross_floor_area, '
+	'SET owner_id = :owner_id, district_id = :district_id, estate_id = :estate_id, block = :block, '
+	'floor = :floor, flat = :flat, gross_floor_area = :gross_floor_area, '
 	'number_of_bedrooms = :number_of_bedrooms, provide_car_park = :provide_car_park, '
 	'selling_price = :selling_price, rental_price = :rental_price, for_transaction_type = :trans_type;'
 )
@@ -102,8 +103,6 @@ DELETE_ESTATE = 'DELETE FROM estate WHERE id = :id;'
 DELETE_PREFERENCE = 'DELETE FROM preference WHERE id = :id;'
 
 DELETE_CUSTOMER = 'DELETE FROM customer WHERE id = :id;'
-
-DELETE_PROPERTY_ADDRESS = 'DELETE FROM propertyAddress WHERE id = :id;'
 
 DELETE_PROPERTY_OWNER = 'DELETE FROM propertyOwner WHERE id = :id;'
 
